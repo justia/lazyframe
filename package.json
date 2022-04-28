@@ -1,5 +1,5 @@
 {
-  "name": "lazyframe",
+  "name": "@justia/lazyframe",
   "description": "Dependency-free library for lazyloading iframes",
   "version": "2.2.7",
   "author": "Viktor Bergehall",
