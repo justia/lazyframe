@@ -13,7 +13,7 @@
     "pagespeed",
     "pageload"
   ],
-  "homepage": "https://github.com/vb/lazyframe",
+  "homepage": "https://github.com/justia/lazyframe",
   "ignore": [
     "**/.*",
     "node_modules",

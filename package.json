@@ -4,7 +4,7 @@
   "version": "2.2.7",
   "author": "Viktor Bergehall",
   "bugs": {
-    "url": "https://github.com/vb/lazyframe/issues"
+    "url": "https://github.com/justia/lazyframe/issues"
   },
   "devDependencies": {
     "@babel/core": "^7.12.17",
@@ -35,7 +35,7 @@
   "main": "dist/lazyframe.min.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vb/lazyframe.git"
+    "url": "git+https://github.com/justia/lazyframe.git"
   },
   "scripts": {
     "build": "./node_modules/.bin/rollup -c",
