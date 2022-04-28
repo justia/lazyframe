@@ -259,7 +259,15 @@ const Lazyframe = () => {
     lazyframe.iframe = getIframe(lazyframe.settings);
 
     if (lazyframe.settings.thumbnail && loadImage) {
-      lazyframe.el.style.backgroundImage = `url(${lazyframe.settings.thumbnail})`;
+      let imgURL = lazyframe.settings.thumbnail;
+      let imgSetData = `url(${imgURL}) 1x`;
+      imgURL = imgURL.replace(/\s/g, '').split(',');
+
+      if (imgURL.length > 1) {
+        imgSetData = `url(${imgURL[0]}) 1x, url(${imgURL[1]}) 1x`;
+      }
+
+      lazyframe.el.style.backgroundImage = `-webkit-image-set(${imgSetData})`;
     }
 
     if (lazyframe.settings.title && lazyframe.el.children.length === 0) {
@@ -298,7 +306,7 @@ const Lazyframe = () => {
     iframeNode.setAttribute('src', settings.src);
     iframeNode.setAttribute('frameborder', 0);
     iframeNode.setAttribute('allowfullscreen', '');
-    
+
     if (settings.autoplay) {
       iframeNode.allow = 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture';
     }
