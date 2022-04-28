@@ -9,7 +9,7 @@ export default {
     format: "umd",
     exports: "default",
     name: "lazyframe",
-    sourcemap: true,
+    sourcemap: false,
   },
   plugins: [
     babel({
