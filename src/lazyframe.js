@@ -259,7 +259,7 @@ const Lazyframe = () => {
     lazyframe.iframe = getIframe(lazyframe.settings);
 
     if (lazyframe.settings.thumbnail && loadImage) {
-      lazyframe.el.style.backgroundImage = `url(${lazyframe.settings.thumbnail})`;
+      lazyframe.el.style.backgroundImage = `-webkit-image-set(url(${lazyframe.settings.thumbnail}) 1x)`;
     }
 
     if (lazyframe.settings.title && lazyframe.el.children.length === 0) {
@@ -298,7 +298,7 @@ const Lazyframe = () => {
     iframeNode.setAttribute('src', settings.src);
     iframeNode.setAttribute('frameborder', 0);
     iframeNode.setAttribute('allowfullscreen', '');
-    
+
     if (settings.autoplay) {
       iframeNode.allow = 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture';
     }
