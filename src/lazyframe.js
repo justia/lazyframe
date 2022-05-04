@@ -195,12 +195,9 @@ const Lazyframe = () => {
 
   function setObservers() {
 
-    const height = window.innerHeight;
-    let count = elements.length;
-    const initElement = (el, i) => {
+    const initElement = (el) => {
       el.settings.initialized = true;
       el.el.classList.add('lazyframe--loaded');
-      count--;
       api(el);
 
       if (el.settings.initinview) {
@@ -210,47 +207,27 @@ const Lazyframe = () => {
       el.settings.onLoad.call(this, el);
     }
 
-    elements
-      .filter(el => el.settings.y < height)
-      .forEach(initElement);
+    if ('IntersectionObserver' in window) {
+      const lazyframeObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const lazyframe = elements.find(element => element.el == entry.target);
 
-    const onScroll = debounce(() => {
+            initElement(lazyframe);
 
-      up = lastY < window.pageYOffset;
-      lastY = window.pageYOffset;
+            lazyframeObserver.unobserve(entry.target);
+          }
+        });
+      });
 
-      if (up) {
-        elements
-          .filter(el => el.settings.y < (height + lastY) && el.settings.initialized === false)
-          .forEach(initElement);
-      }
-
-      if (count === 0) {
-        window.removeEventListener('scroll', onScroll, false);
-      }
-
-    }, settings.debounce);
-
-    let lastY = 0;
-    let up = false;
-
-    window.addEventListener('scroll', onScroll, false);
-
-    function debounce(func, wait, immediate) {
-      let timeout;
-      return function() {
-        let context = this, args = arguments;
-        let later = function() {
-          timeout = null;
-          if (!immediate) func.apply(context, args);
-        };
-        let callNow = immediate && !timeout;
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-        if (callNow) func.apply(context, args);
-      };
-    };
-
+      elements.forEach((lazyframe) => {
+          lazyframeObserver.observe(lazyframe.el);
+      });
+    } else {
+      elements.forEach((lazyframe) => {
+        initElement(lazyframe);
+      });
+    }
   }
 
   function build(lazyframe, loadImage) {
