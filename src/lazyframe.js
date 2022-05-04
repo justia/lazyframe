@@ -13,7 +13,6 @@ const Lazyframe = () => {
     thumbnail: undefined,
     title: undefined,
     initialized: false,
-    y: undefined,
     debounce: 250,
     lazyload: true,
     autoplay: true,
