@@ -74,7 +74,7 @@ const Lazyframe = () => {
     }
 
     if (settings.lazyload) {
-      scroll();
+      setObservers();
     }
 
   }
@@ -194,7 +194,7 @@ const Lazyframe = () => {
 
   }
 
-  function scroll() {
+  function setObservers() {
 
     const height = window.innerHeight;
     let count = elements.length;
