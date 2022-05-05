@@ -81,8 +81,8 @@ const Lazyframe = () => {
         lazyframe.el.addEventListener('click', () => {
             lazyframe.el.appendChild(lazyframe.iframe);
 
-            const iframe = el.querySelectorAll('iframe');
-            lazyframe.settings.onAppend.call(this, iframe[0]);
+            const iframe = el.querySelector('iframe');
+            lazyframe.settings.onAppend.call(this, iframe);
         });
 
         if (settings.lazyload) {
