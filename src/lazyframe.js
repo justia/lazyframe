@@ -105,7 +105,6 @@ const Lazyframe = () => {
             settings,
             attr,
             {
-                y: el.offsetTop,
                 originalSrc: attr.src,
                 query: getQuery(attr.src)
             }
