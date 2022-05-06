@@ -70,8 +70,7 @@ const Lazyframe = () => {
     }
 
     function loop(el) {
-        if (el instanceof HTMLElement === false ||
-            el.classList.contains('lazyframe--loaded')) return;
+        if (el instanceof HTMLElement === false || el.classList.contains('lazyframe--loaded')) return;
 
         const lazyframe = {
             el: el,
@@ -174,10 +173,20 @@ const Lazyframe = () => {
         request.send();
     }
 
+    function setPlayBtn(btnTxt = 'Play') {
+        const playButton = document.createElement('button');
+        playButton.type = 'button';
+        playButton.classList.add('lf-play-btn');
+        playButton.innerHTML = `<span class="visually-hidden">${btnTxt}</span>`;
+
+        return playButton;
+    }
+
     function setObservers() {
         const initElement = (el) => {
             el.settings.initialized = true;
             el.el.classList.add('lazyframe--loaded');
+            el.el.appendChild(setPlayBtn());
             api(el);
 
             if (el.settings.initinview) {
