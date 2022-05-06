@@ -79,6 +79,7 @@ const Lazyframe = () => {
 
         lazyframe.el.addEventListener('click', () => {
             lazyframe.el.appendChild(lazyframe.iframe);
+            lazyframe.el.classList.add('lazyframe--activated');
 
             const iframe = el.querySelector('iframe');
             lazyframe.settings.onAppend.call(this, iframe);
