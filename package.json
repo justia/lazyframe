@@ -1,7 +1,7 @@
 {
   "name": "@justia/lazyframe",
   "description": "Dependency-free library for lazyloading iframes",
-  "version": "2.3.1",
+  "version": "2.3.2",
   "author": "Viktor Bergehall",
   "bugs": {
     "url": "https://github.com/justia/lazyframe/issues"
@@ -14,6 +14,7 @@
     "ava": "^3.15.0",
     "jsdom": "15",
     "rollup": "^2.39.0",
+    "rollup-plugin-modify": "^3.0.0",
     "rollup-plugin-scss": "^3.0.0",
     "rollup-plugin-terser": "^7.0.2",
     "sass": "^1.42.1"
