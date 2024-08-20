@@ -28,7 +28,7 @@ const Lazyframe = () => {
             youtube: (m) => (m && m[1].length == 11 ? m[1] : false),
             youtube_nocookie: (m) => (m && m[1].length == 11 ? m[1] : false),
             vimeo: (m) =>
-                (m && m[1].length === 9) || m[1].length === 8 ? m[1] : false,
+                (m && m[1].length === 10 || m[1].length === 9) || m[1].length === 8 ? m[1] : false,
         },
         src: {
             youtube: (s) =>
