@@ -184,8 +184,6 @@ const Lazyframe = () => {
 
     function setObservers() {
         const initElement = (el) => {
-            if (el.settings.initialized) return; // prevents re-initialization of existing observer.
-
             el.settings.initialized = true;
             el.el.classList.add('lazyframe--loaded');
             el.el.appendChild(setPlayBtn());
