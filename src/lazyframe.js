@@ -43,7 +43,7 @@ const Lazyframe = () => {
         },
         endpoint: (s) => {
             if (s.vendor === 'youtube') {
-                return `https://www.youtube.com/watch?v=${s.id}&autoplay=${s.autoplay ? "1" : "0"
+                return `https://noembed.com/embed?url=https://www.youtube.com/watch?v=${s.id}&autoplay=${s.autoplay ? "1" : "0"
                 }&${s.query}`
             }
 
@@ -118,7 +118,9 @@ const Lazyframe = () => {
         );
 
         if (options.vendor) {
+            console.log("🚀 ~ setup ~ options.vendor:", options.vendor)
             const match = options.src.match(constants.regex[options.vendor]);
+            console.log("🚀 ~ setup ~ match:", match)
             options.id = constants.condition[options.vendor](match);
         }
 
@@ -160,6 +162,8 @@ const Lazyframe = () => {
 
     function send(lazyframe, cb) {
         const endpoint = constants.endpoint(lazyframe.settings);
+        console.log("🚀 ~ send ~ lazyframe.settings:", lazyframe.settings)
+        console.log("🚀 ~ send ~ endpoint:", endpoint)
         const request = new XMLHttpRequest();
 
         request.open('GET', endpoint, true);
