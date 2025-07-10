@@ -43,7 +43,7 @@ const Lazyframe = () => {
         },
         endpoint: (s) => {
             if (s.vendor === 'youtube') {
-                return `https://www.youtube.com/watch?v=${s.id}&autoplay=${s.autoplay ? "1" : "0"
+                return `https://noembed.com/embed?url=https://www.youtube.com/watch?v=${s.id}&autoplay=${s.autoplay ? "1" : "0"
                 }&${s.query}`
             }
 
