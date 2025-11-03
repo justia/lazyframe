@@ -14,6 +14,7 @@ const Lazyframe = () => {
         autoplay: true,
         loadThumbnail: true,
         initinview: false,
+        showPlayButton: true,
         onLoad: (l) => { },
         onAppend: (l) => { },
         onThumbnailLoad: (img) => { }
@@ -119,7 +120,7 @@ const Lazyframe = () => {
         );
 
         // Coerce boolean data-attributes
-        ['lazyload', 'autoplay', 'initinview', 'loadThumbnail'].forEach(option => {
+        ['lazyload', 'autoplay', 'initinview', 'loadThumbnail', 'showPlayButton'].forEach(option => {
             if (options[option] === 'false') {
                 options[option] = false;
             }
@@ -203,7 +204,9 @@ const Lazyframe = () => {
 
             el.settings.initialized = true;
             el.el.classList.add('lazyframe--loaded');
-            el.el.appendChild(setPlayBtn());
+            if (el.settings.showPlayButton) {
+                el.el.appendChild(setPlayBtn());
+            }
             api(el);
 
             if (el.settings.initinview) {
