@@ -12,6 +12,7 @@ const Lazyframe = () => {
         initialized: false,
         lazyload: true,
         autoplay: true,
+        loadThumbnail: true,
         initinview: false,
         onLoad: (l) => { },
         onAppend: (l) => { },
@@ -116,6 +117,13 @@ const Lazyframe = () => {
                 query: getQuery(attr.src)
             }
         );
+
+        // Coerce boolean data-attributes
+        ['lazyload', 'autoplay', 'initinview', 'loadThumbnail'].forEach(option => {
+            if (options[option] === 'false') {
+                options[option] = false;
+            }
+        });
 
         if (options.vendor) {
             const match = options.src.match(constants.regex[options.vendor]);
@@ -231,7 +239,7 @@ const Lazyframe = () => {
     function build(lazyframe, loadImage) {
         lazyframe.iframe = getIframe(lazyframe.settings);
 
-        if (lazyframe.settings.thumbnail && loadImage) {
+        if (lazyframe.settings.thumbnail && loadImage && lazyframe.settings.loadThumbnail) {
             let imgURL = lazyframe.settings.thumbnail;
             let imgSetData = `url(${imgURL}) 1x`;
             imgURL = imgURL.replace(/\s/g, '').split(',');
