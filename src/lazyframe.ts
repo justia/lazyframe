@@ -131,13 +131,7 @@ const Lazyframe = () => {
     }
 
     function setup(el: HTMLElement): LazyframeSettings {
-        const dataAttributes: { [key: string]: any } = Array.from(el.attributes)
-            .filter(attr => attr.value !== '')
-            .reduce((obj, curr) => {
-                const name = curr.name.startsWith('data-') ? curr.name.substring(5) : curr.name;
-                obj[name] = curr.value;
-                return obj;
-            }, {} as { [key: string]: any });
+        const dataAttributes = { ...el.dataset };
 
         const options: LazyframeSettings = {
             ...settings,
@@ -149,8 +143,11 @@ const Lazyframe = () => {
 
         // Coerce boolean data-attributes from string to boolean
         ['lazyload', 'autoplay', 'initinview', 'loadThumbnail', 'showPlayButton'].forEach(option => {
-            if (options[option as keyof LazyframeOptions] === 'false') {
-                (options as any)[option] = false;
+            const key = option as keyof LazyframeOptions;
+            if (options[key] === 'true') {
+                (options as any)[key] = true;
+            } else if (options[key] === 'false') {
+                (options as any)[key] = false;
             }
         });
 
@@ -166,7 +163,7 @@ const Lazyframe = () => {
         return options;
     }
 
-    function getQuery(src: string): string | null {
+    function getQuery(src: string | undefined): string | null {
         if (!src) return null;
         const query = src.split('?');
         return query[1] ? query[1] : null;
