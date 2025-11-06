@@ -52,7 +52,7 @@ Include JavaScript in html
 Sass import
 
 ```scss
-@import 'src/scss/lazyframe'
+@forward 'src/scss/lazyframe'
 ```
 
 Include css in html
