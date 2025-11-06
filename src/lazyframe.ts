@@ -34,7 +34,7 @@ interface LazyframeSettings extends LazyframeOptions {
 interface LazyframeInstance {
     el: HTMLElement;
     settings: LazyframeSettings;
-    iframe?: DocumentFragment;
+    iframe?: HTMLIFrameElement;
 }
 
 // --- Library Code ---
@@ -300,8 +300,7 @@ const Lazyframe = () => {
         }
     }
 
-    function getIframe(settings: LazyframeSettings): DocumentFragment {
-        const docfrag = document.createDocumentFragment();
+    function getIframe(settings: LazyframeSettings): HTMLIFrameElement {
         const iframeNode = document.createElement('iframe');
 
         if (settings.vendor && constants.src[settings.vendor]) {
@@ -317,8 +316,7 @@ const Lazyframe = () => {
             iframeNode.allow = 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture';
         }
 
-        docfrag.appendChild(iframeNode);
-        return docfrag;
+        return iframeNode;
     }
     return init;
 }
