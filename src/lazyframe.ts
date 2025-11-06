@@ -271,7 +271,14 @@ const Lazyframe = () => {
         instance.iframe = getIframe(instance.settings);
 
         if (instance.settings.thumbnail && loadImage && instance.settings.loadThumbnail) {
-            instance.el.style.backgroundImage = `url(${instance.settings.thumbnail})`;
+            const thumbnails = instance.settings.thumbnail.replace(/\s/g, '').split(',');
+
+            if (thumbnails.length > 1) {
+                const imageSet = `url('${thumbnails[0]}') 1x, url('${thumbnails[1]}') 1x`;
+                instance.el.style.backgroundImage = `-webkit-image-set(${imageSet})`;
+            } else {
+                instance.el.style.backgroundImage = `url('${thumbnails[0]}')`;
+            }
         }
 
         if (instance.settings.title && instance.el.children.length === 0) {
