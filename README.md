@@ -49,12 +49,6 @@ Include JavaScript in html
 <script src="dist/lazyframe.min.js"></script>
 ```
 
-Sass import
-
-```scss
-@forward 'src/scss/lazyframe'
-```
-
 Include css in html
 
 ```html
