@@ -21,7 +21,7 @@ const Lazyframe = () => {
     const constants = {
         regex: {
             youtube_nocookie: /(?:youtube-nocookie\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\?(?:\S*?&?v\=)))([a-zA-Z0-9_-]{6,11})/,
-            youtube: /(?:youtube(?:-nocookie)?\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\?(?:\S*?&?v\=))|youtu\.be\/)([a-zA-Z0-9_-]{6,11})/,
+            youtube: /(?:youtube\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\?(?:\S*?&?v\=))|youtu\.be\/)([a-zA-Z0-9_-]{6,11})/,
             vimeo: /vimeo\.com\/(?:video\/)?([0-9]*)(?:\?|)/,
         },
         condition: {
@@ -35,14 +35,14 @@ const Lazyframe = () => {
               `https://www.youtube.com/embed/${s.id}/?autoplay=${s.autoplay ? "1" : "0"
               }&${s.query}`,
             youtube_nocookie: (s) =>
-                `https://www.youtube-nocookie.com/watch?v=${s.id}&autoplay=${s.autoplay ? "1" : "0"
+                `https://www.youtube-nocookie.com/embed/${s.id}/?autoplay=${s.autoplay ? "1" : "0"
                 }&${s.query}`,
             vimeo: (s) =>
                 `https://player.vimeo.com/video/${s.id}/?autoplay=${s.autoplay ? "1" : "0"
                 }&${s.query}`,
         },
         endpoint: (s) => {
-            if (s.vendor === 'youtube') {
+            if (s.vendor.includes('youtube')) {
                 return `https://noembed.com/embed?url=https://www.youtube.com/watch?v=${s.id}&autoplay=${s.autoplay ? "1" : "0"
                 }&${s.query}`
             }
@@ -84,6 +84,13 @@ const Lazyframe = () => {
             settings: setup(el),
         };
 
+        // There's cases where the `lazyload` library is loaded in two
+        // different scripts, so we set a flag to know if an iframe
+        // was already handled by lazyload previously
+        if (lazyframe.el.dataset.lazyloadReady === '1') return;
+
+        lazyframe.el.dataset.lazyloadReady = '1';
+
         lazyframe.el.addEventListener('click', () => {
             lazyframe.el.appendChild(lazyframe.iframe);
             lazyframe.el.classList.add('lazyframe--activated');
@@ -116,6 +123,10 @@ const Lazyframe = () => {
                 query: getQuery(attr.src)
             }
         );
+
+        if (options.src.includes('youtube-nocookie')) {
+          options.vendor = 'youtube_nocookie';
+        }
 
         if (options.vendor) {
             const match = options.src.match(constants.regex[options.vendor]);
