@@ -84,6 +84,13 @@ const Lazyframe = () => {
             settings: setup(el),
         };
 
+        // There's cases where the `lazyload` library is loaded in two
+        // different scripts, so we set a flag to know if an iframe
+        // was already handled by lazyload previously
+        if (lazyframe.el.dataset.lazyloadReady === '1') return;
+
+        lazyframe.el.dataset.lazyloadReady = '1';
+
         lazyframe.el.addEventListener('click', () => {
             lazyframe.el.appendChild(lazyframe.iframe);
             lazyframe.el.classList.add('lazyframe--activated');
