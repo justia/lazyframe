@@ -42,7 +42,7 @@ const Lazyframe = () => {
                 }&${s.query}`,
         },
         endpoint: (s) => {
-            if (s.vendor === 'youtube') {
+            if (s.vendor.includes('youtube')) {
                 return `https://noembed.com/embed?url=https://www.youtube.com/watch?v=${s.id}&autoplay=${s.autoplay ? "1" : "0"
                 }&${s.query}`
             }
