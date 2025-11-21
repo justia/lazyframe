@@ -37,6 +37,11 @@ interface LazyframeInstance {
     iframe?: HTMLIFrameElement;
 }
 
+interface NoEmbedResponse {
+    title: string;
+    thumbnail_url: string;
+}
+
 interface VideoProvider {
     regex: RegExp;
     condition: (match: RegExpMatchArray | null) => string | false;
@@ -181,48 +186,39 @@ const Lazyframe = () => {
         return !settings.title || !settings.thumbnail;
     }
 
-    function api(instance: LazyframeInstance): void {
-        if (useApi(instance.settings)) {
-            send(instance, (err, data) => {
-                if (err || !data) return;
-
-                const response = data[0];
-                const _instance = data[1];
-
-                if (!_instance.settings.title) {
-                    _instance.settings.title = constants.response.title(response);
-                }
-                if (!_instance.settings.thumbnail) {
-                    const url = constants.response.thumbnail(response);
-                    _instance.settings.thumbnail = url;
-                    if (_instance.settings.onThumbnailLoad) {
-                        _instance.settings.onThumbnailLoad(url);
-                    }
-                }
-                build(_instance, true);
-            });
-        } else {
+    async function api(instance: LazyframeInstance): Promise<void> {
+        if (!useApi(instance.settings)) {
             build(instance, true);
+            return;
         }
-    }
 
-    function send(instance: LazyframeInstance, cb: (err: boolean | null, data?: [any, LazyframeInstance]) => void): void {
         const endpoint = constants.endpoint(instance.settings);
-        const request = new XMLHttpRequest();
 
-        request.open('GET', endpoint, true);
-
-        request.onload = function () {
-            if (request.status >= 200 && request.status < 400) {
-                const data = JSON.parse(request.responseText);
-                cb(null, [data, instance]);
-            } else {
-                cb(true);
+        try {
+            const response = await fetch(endpoint);
+            if (!response.ok) {
+                throw new Error(`API request failed with status ${response.status}`);
             }
-        };
+            const data: NoEmbedResponse = await response.json();
 
-        request.onerror = function () { cb(true); };
-        request.send();
+            if (!instance.settings.title) {
+                instance.settings.title = data.title;
+            }
+            if (!instance.settings.thumbnail) {
+                const url = data.thumbnail_url;
+                instance.settings.thumbnail = url;
+                if (instance.settings.onThumbnailLoad) {
+                    instance.settings.onThumbnailLoad(url);
+                }
+            }
+            
+            build(instance, true);
+
+        } catch (error) {
+            console.error("Lazyframe API call failed:", error);
+            // Build the frame anyway so the user experience isn't broken
+            build(instance, true); 
+        }
     }
 
     function setPlayBtn(btnTxt: string = 'Play'): HTMLButtonElement {
