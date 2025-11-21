@@ -124,9 +124,9 @@ const Lazyframe = () => {
             }
         );
 
-      if (options.src.includes('youtube-nocookie')) {
-        options.vendor = 'youtube_nocookie';
-      }
+        if (options.src.includes('youtube-nocookie')) {
+          options.vendor = 'youtube_nocookie';
+        }
 
         if (options.vendor) {
             const match = options.src.match(constants.regex[options.vendor]);
