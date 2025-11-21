@@ -61,7 +61,7 @@ const providers: Record<Vendor, VideoProvider> = {
     },
     vimeo: {
         regex: /vimeo\.com\/(?:video\/)?([0-9]*)(?:\?|)/,
-        condition: (m) => (m && (m[1].length === 10 || m[1].length === 9 || m[1].length === 8)) ? m[1] : false,
+        condition: (m) => (m && m[1].length > 0) ? m[1] : false,
         buildSrc: (s) => `https://player.vimeo.com/video/${s.id}/?autoplay=${s.autoplay ? "1" : "0"}&${s.query || ''}`,
     },
 };
@@ -141,17 +141,24 @@ const providers: Record<Vendor, VideoProvider> = {
 
     function setup(el: HTMLElement): LazyframeSettings {
         const data = { ...el.dataset };
-        const options: LazyframeSettings = {
-            ...settings,
-            lazyload: parseBoolean(data.lazyload, settings.lazyload),
-            autoplay: parseBoolean(data.autoplay, settings.autoplay),
-            initinview: parseBoolean(data.initinview, settings.initinview),
-            loadThumbnail: parseBoolean(data.loadThumbnail, settings.loadThumbnail),
-            showPlayButton: parseBoolean(data.showPlayButton, settings.showPlayButton),
-            ...data, // Spread remaining data attributes
-            initialized: false,
+        
+        // Merge defaults, user settings, and data attributes in order of precedence
+        const initialOptions: LazyframeSettings = {
+            ...settings, // Global settings
+            ...data,     // Data attributes (will overwrite global settings if present)
+            initialized: false, // Always start as not initialized
             originalSrc: data.src,
             query: getQuery(data.src)
+        };
+
+        // Explicitly parse boolean attributes, ensuring they take final precedence
+        const options: LazyframeSettings = {
+            ...initialOptions,
+            lazyload: parseBoolean(data.lazyload, initialOptions.lazyload),
+            autoplay: parseBoolean(data.autoplay, initialOptions.autoplay),
+            initinview: parseBoolean(data.initinview, initialOptions.initinview),
+            loadThumbnail: parseBoolean(data.loadThumbnail, initialOptions.loadThumbnail),
+            showPlayButton: parseBoolean(data.showPlayButton, initialOptions.showPlayButton),
         };
 
         if (options.vendor && options.src) {
@@ -283,7 +290,7 @@ const providers: Record<Vendor, VideoProvider> = {
             }
         }
 
-        if (instance.settings.title && instance.el.children.length === 0) {
+        if (instance.settings.title && !instance.el.querySelector('.lazyframe__title')) {
             const titleNode = document.createElement('span');
             titleNode.className = 'lazyframe__title';
             titleNode.textContent = instance.settings.title;

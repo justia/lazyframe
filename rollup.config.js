@@ -13,12 +13,11 @@ export default {
     sourcemap: false,
   },
   plugins: [
-    typescript(),
-
+    typescript(), // Re-added typescript plugin
     babel({
+      babelrc: true, // Use babel.config.json
       exclude: "node_modules/**",
-      babelHelpers: "bundled",
-      extensions: ['.js', '.ts'],
+      babelHelpers: "runtime", // Use runtime helpers
     }),
 
     terser(),
