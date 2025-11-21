@@ -35,7 +35,7 @@ const Lazyframe = () => {
               `https://www.youtube.com/embed/${s.id}/?autoplay=${s.autoplay ? "1" : "0"
               }&${s.query}`,
             youtube_nocookie: (s) =>
-                `https://www.youtube-nocookie.com/watch?v=${s.id}&autoplay=${s.autoplay ? "1" : "0"
+                `https://www.youtube-nocookie.com/embed/${s.id}/?autoplay=${s.autoplay ? "1" : "0"
                 }&${s.query}`,
             vimeo: (s) =>
                 `https://player.vimeo.com/video/${s.id}/?autoplay=${s.autoplay ? "1" : "0"
