@@ -68,10 +68,9 @@ const providers: Record<Vendor, VideoProvider> = {
 
 // --- Library Code ---
 
-const Lazyframe = () => {
+    const Lazyframe = () => {
     let settings: LazyframeOptions;
-    const elements: LazyframeInstance[] = [];
-
+    const elements: Map<HTMLElement, LazyframeInstance> = new Map();
     const defaults: LazyframeSettings = {
         initialized: false,
         lazyload: true,
@@ -252,10 +251,11 @@ const Lazyframe = () => {
             const lazyframeObserver = new IntersectionObserver((entries) => {
                 entries.forEach((entry) => {
                     if (entry.isIntersecting) {
-                        const instance = elements.find(element => element.el === entry.target);
+                        const instance = elements.get(entry.target as HTMLElement);
                         if (instance) {
                             initElement(instance);
                             lazyframeObserver.unobserve(entry.target);
+                            elements.delete(entry.target as HTMLElement);
                         }
                     }
                 });
@@ -298,7 +298,7 @@ const Lazyframe = () => {
         }
 
         if (!instance.settings.initialized) {
-            elements.push(instance);
+            elements.set(instance.el, instance);
         }
     }
 
