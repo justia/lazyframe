@@ -141,25 +141,19 @@ const Lazyframe = () => {
     }
 
     function setup(el: HTMLElement): LazyframeSettings {
-        const dataAttributes = { ...el.dataset };
-
+        const data = { ...el.dataset };
         const options: LazyframeSettings = {
             ...settings,
-            ...dataAttributes,
-            initialized: false, // Ensure this is reset per-instance
-            originalSrc: dataAttributes.src,
-            query: getQuery(dataAttributes.src)
+            lazyload: parseBoolean(data.lazyload, settings.lazyload),
+            autoplay: parseBoolean(data.autoplay, settings.autoplay),
+            initinview: parseBoolean(data.initinview, settings.initinview),
+            loadThumbnail: parseBoolean(data.loadThumbnail, settings.loadThumbnail),
+            showPlayButton: parseBoolean(data.showPlayButton, settings.showPlayButton),
+            ...data, // Spread remaining data attributes
+            initialized: false,
+            originalSrc: data.src,
+            query: getQuery(data.src)
         };
-
-        // Coerce boolean data-attributes from string to boolean
-        ['lazyload', 'autoplay', 'initinview', 'loadThumbnail', 'showPlayButton'].forEach(option => {
-            const key = option as keyof LazyframeOptions;
-            if (options[key] === 'true') {
-                (options as any)[key] = true;
-            } else if (options[key] === 'false') {
-                (options as any)[key] = false;
-            }
-        });
 
         if (options.vendor && options.src) {
             const provider = providers[options.vendor];
@@ -184,6 +178,11 @@ const Lazyframe = () => {
     function useApi(settings: LazyframeSettings): boolean {
         if (!settings.vendor) return false;
         return !settings.title || !settings.thumbnail;
+    }
+
+    function parseBoolean(value: string | undefined, defaultValue: boolean = false): boolean {
+        if (value === undefined || value === null) return defaultValue;
+        return value === 'true';
     }
 
     async function api(instance: LazyframeInstance): Promise<void> {
