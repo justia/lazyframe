@@ -37,6 +37,30 @@ interface LazyframeInstance {
     iframe?: HTMLIFrameElement;
 }
 
+interface VideoProvider {
+    regex: RegExp;
+    condition: (match: RegExpMatchArray | null) => string | false;
+    buildSrc: (settings: LazyframeSettings) => string;
+}
+
+const providers: Record<Vendor, VideoProvider> = {
+    youtube: {
+        regex: /(?:youtube\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\?(?:\S*?&?v\=))|youtu\.be\/)([a-zA-Z0-9_-]{6,11})/,
+        condition: (m) => (m && m[1].length === 11 ? m[1] : false),
+        buildSrc: (s) => `https://www.youtube.com/embed/${s.id}/?autoplay=${s.autoplay ? "1" : "0"}&${s.query || ''}`,
+    },
+    youtube_nocookie: {
+        regex: /(?:youtube-nocookie\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\?(?:\S*?&?v\=)))([a-zA-Z0-9_-]{6,11})/,
+        condition: (m) => (m && m[1].length === 11 ? m[1] : false),
+        buildSrc: (s) => `https://www.youtube-nocookie.com/embed/${s.id}/?autoplay=${s.autoplay ? "1" : "0"}&${s.query || ''}`,
+    },
+    vimeo: {
+        regex: /vimeo\.com\/(?:video\/)?([0-9]*)(?:\?|)/,
+        condition: (m) => (m && (m[1].length === 10 || m[1].length === 9 || m[1].length === 8)) ? m[1] : false,
+        buildSrc: (s) => `https://player.vimeo.com/video/${s.id}/?autoplay=${s.autoplay ? "1" : "0"}&${s.query || ''}`,
+    },
+};
+
 // --- Library Code ---
 
 const Lazyframe = () => {
@@ -56,25 +80,6 @@ const Lazyframe = () => {
     };
 
     const constants = {
-        regex: {
-            youtube_nocookie: /(?:youtube-nocookie\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\?(?:\S*?&?v\=)))([a-zA-Z0-9_-]{6,11})/,
-            youtube: /(?:youtube\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\?(?:\S*?&?v\=))|youtu\.be\/)([a-zA-Z0-9_-]{6,11})/,
-            vimeo: /vimeo\.com\/(?:video\/)?([0-9]*)(?:\?|)/,
-        },
-        condition: {
-            youtube: (m: RegExpMatchArray | null): string | false => (m && m[1].length === 11 ? m[1] : false),
-            youtube_nocookie: (m: RegExpMatchArray | null): string | false => (m && m[1].length === 11 ? m[1] : false),
-            vimeo: (m: RegExpMatchArray | null): string | false =>
-                (m && (m[1].length === 10 || m[1].length === 9 || m[1].length === 8)) ? m[1] : false,
-        },
-        src: {
-            youtube: (s: LazyframeSettings): string =>
-              `https://www.youtube.com/embed/${s.id}/?autoplay=${s.autoplay ? "1" : "0"}&${s.query || ''}`,
-            youtube_nocookie: (s: LazyframeSettings): string =>
-                `https://www.youtube-nocookie.com/embed/${s.id}/?autoplay=${s.autoplay ? "1" : "0"}&${s.query || ''}`,
-            vimeo: (s: LazyframeSettings): string =>
-                `https://player.vimeo.com/video/${s.id}/?autoplay=${s.autoplay ? "1" : "0"}&${s.query || ''}`,
-        },
         endpoint: (s: LazyframeSettings): string => {
             if (s.vendor === 'youtube') {
                 return `https://noembed.com/embed?url=https://www.youtube.com/watch?v=${s.id}`;
@@ -152,11 +157,13 @@ const Lazyframe = () => {
         });
 
         if (options.vendor && options.src) {
-            const match = options.src.match(constants.regex[options.vendor]);
-            const condition = constants.condition[options.vendor];
-            const id = condition(match);
-            if (id) {
-                options.id = id;
+            const provider = providers[options.vendor];
+            if (provider) {
+                const match = options.src.match(provider.regex);
+                const id = provider.condition(match);
+                if (id) {
+                    options.id = id;
+                }
             }
         }
 
@@ -303,8 +310,8 @@ const Lazyframe = () => {
     function getIframe(settings: LazyframeSettings): HTMLIFrameElement {
         const iframeNode = document.createElement('iframe');
 
-        if (settings.vendor && constants.src[settings.vendor]) {
-            settings.src = constants.src[settings.vendor](settings);
+        if (settings.vendor && providers[settings.vendor]) {
+            settings.src = providers[settings.vendor].buildSrc(settings);
         }
 
         iframeNode.setAttribute('id', `lazyframe-${settings.id}`);
