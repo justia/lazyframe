@@ -1,5 +1,3 @@
-// lazyframe.ts
-
 import './scss/lazyframe.scss';
 
 // --- Type Definitions ---
@@ -85,7 +83,7 @@ const providers: Record<Vendor, VideoProvider> = {
 
     const constants = {
         endpoint: (s: LazyframeSettings): string => {
-            if (s.vendor === 'youtube') {
+            if (s.vendor?.includes('youtube')) {
                 return `https://noembed.com/embed?url=https://www.youtube.com/watch?v=${s.id}`;
             }
             return `https://noembed.com/embed?url=${s.src}`;
@@ -120,13 +118,22 @@ const providers: Record<Vendor, VideoProvider> = {
             settings: setup(el),
         };
 
+        // There's cases where the `lazyload` library is loaded in two
+        // different scripts, so we set a flag to know if an iframe
+        // was already handled by lazyload previously
+        if (instance.el.dataset.lazyloadReady === '1') return;
+
+        instance.el.dataset.lazyloadReady = '1';
+
         instance.el.addEventListener('click', () => {
             if (instance.iframe) {
                 instance.el.appendChild(instance.iframe);
             }
+
             instance.el.classList.add('lazyframe--activated');
 
             const iframe = el.querySelector<HTMLIFrameElement>('iframe');
+
             if (iframe && instance.settings.onAppend) {
                 instance.settings.onAppend(iframe);
             }
@@ -161,11 +168,17 @@ const providers: Record<Vendor, VideoProvider> = {
             showPlayButton: parseBoolean(data.showPlayButton, initialOptions.showPlayButton),
         };
 
+        if (options.src?.includes('youtube-nocookie')) {
+            options.vendor = 'youtube_nocookie';
+        }
+
         if (options.vendor && options.src) {
             const provider = providers[options.vendor];
+
             if (provider) {
                 const match = options.src.match(provider.regex);
                 const id = provider.condition(match);
+
                 if (id) {
                     options.id = id;
                 }
