@@ -12,13 +12,13 @@ Because embedded content takes time to load.
 - **Google maps** – 52 requests ≈ 580kb
 - **Vimeo** – 8 requests ≈ 145kb
 
-Lazyframe creates a responsive placeholder for embedded content and requests it when the user interacts with it. This decreases the page load and idle time.
+Lazyframe creates a responsive placeholder for embedded content and requests it only when the user interacts with it. This decreases page load and idle time.
 
 Lazyframe comes with brand-like themes for Youtube and Vimeo.
 
 1. [Install](#install)
 2. [Import](#import)
-3. [Initialize](#Initialize)
+3. [Initialize](#initialize)
 4. [Options](#options)
 
 ### Install
@@ -26,7 +26,7 @@ Lazyframe comes with brand-like themes for Youtube and Vimeo.
 NPM
 
 ```bash
-$ npm install lazyframe --save
+$ npm install @justia/lazyframe --save
 ```
 
 Bower
@@ -40,19 +40,13 @@ $ bower install lazyframe
 JavaScript ES6 imports
 
 ```js
-import lazyframe from "lazyframe";
+import lazyframe from "@justia/lazyframe";
 ```
 
 Include JavaScript in html
 
 ```html
 <script src="dist/lazyframe.min.js"></script>
-```
-
-Sass import
-
-```sass
-@import 'src/scss/lazyframe'
 ```
 
 Include css in html
@@ -63,30 +57,36 @@ Include css in html
 
 ### Initialize
 
+The `lazyframe` function accepts a CSS selector, a single DOM element, or a collection of elements (like a `NodeList` or jQuery object).
+
 ```js
-// Passing a selector
+// Passing a selector string
 lazyframe(".lazyframe");
 
-// Passing a nodelist
-let elements = document.querySelectorAll(".lazyframe");
+// Passing a NodeList
+const elements = document.querySelectorAll(".lazyframe");
 lazyframe(elements);
 
-// Passing a jQuery object
-let elements = $(".lazyframe");
-lazyframe(elements);
+// Passing a single element
+const element = document.querySelector(".lazyframe");
+lazyframe(element);
 ```
 
 ## Options
 
-You can pass general options to lazyframe on initialization. Element-specific options (most options) are set on data attributes on the element itself.
+Configuration can be applied globally during initialization or on a per-element basis using `data-*` attributes. Element-specific attributes will always override global options.
 
-General options and corresponding defaults
+### General Options
+
+These options are passed as an object during initialization and apply to all instances unless overridden by a `data-*` attribute.
 
 ```js
 lazyframe(elements, {
-  debounce: 250,
   lazyload: true,
   autoplay: true,
+  initinview: false,
+  showPlayButton: true,
+  loadThumbnail: true,
 
   // Callbacks
   onLoad: (lazyframe) => console.log(lazyframe),
@@ -95,68 +95,48 @@ lazyframe(elements, {
 });
 ```
 
-### `debounce`
+| Option | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `lazyload` | `(boolean)` | `true` | If `true`, uses `IntersectionObserver` to initialize only when the element is in the viewport. If `false`, initializes all elements on page load. |
+| `autoplay` | `(boolean)` | `true` | If `true`, the embedded content will attempt to play automatically after the user clicks the placeholder. Sets `autoplay=1` in the iframe `src` and adds `autoplay` to the `allow` attribute. |
+| `initinview` | `(boolean)` | `false` | If `true`, the iframe is immediately initialized (as if clicked) when the element enters the viewport. Requires `lazyload: true`. |
+| `showPlayButton` | `(boolean)` | `true` | If `false`, the play button graphic will not be added to the placeholder. |
+| `loadThumbnail` | `(boolean)` | `true` | If `false`, the fetched thumbnail image will not be applied as a background to the placeholder. |
+| `onLoad` | `(function)` | ` ` | Callback function fired when an element is initialized (i.e., enters the viewport or on page load if `lazyload` is `false`). Receives the lazyframe instance object. |
+| `onAppend` | `(function)` | ` ` | Callback function fired after the `iframe` is appended to the DOM upon user interaction. Receives the `iframe` element. |
+| `onThumbnailLoad` | `(function)` | ` ` | Callback function fired after a thumbnail URL is successfully fetched from the `noembed.com` API. Receives the image URL string. |
 
-Value (in milliseconds) for when the update function should run after the user has scrolled. [More here](https://css-tricks.com/the-difference-between-throttling-and-debouncing/)
+### Element-Specific Options (Data Attributes)
 
-### `lazyload`
-
-Set this to `false` if you want all API calls and local images to be loaded on page load (instead of when the element is in view).
-
-### `autoplay`
-
-Set this to `false` to remove autoplay from the `allow` attribute on the iframe tag i.e if set this to `false` if you want don't want your Youtube video to automatically start playing once the user clicks on the play icon.
-
-### `onLoad`
-
-Callback function for when a element is initialized.
-
-### `onAppend`
-
-Callback function for when the iframe is appended to DOM.
-
-### `onThumbnailLoad`
-
-Callback function with the thumbnail URL
-
-## Element-specific options
+These options are set as `data-*` attributes directly on the HTML element.
 
 ```html
 <div
   class="lazyframe"
-  data-vendor=""
-  data-title=""
-  data-thumbnail=""
-  data-src=""
-  data-ratio="1:1"
-  data-initinview="false"
+  data-src="https://www.youtube.com/embed/ara1uUvajoU"
+  data-vendor="youtube"
+  data-title="Custom Title"
+  data-thumbnail="https://example.com/custom-thumb.jpg"
+  data-ratio="16:9"
   data-autoplay="false"
+  data-initinview="true"
+  data-show-play-button="false"
+  data-load-thumbnail="false"
 ></div>
 ```
 
-### `data-vendor`
-
-Attribute for theming lazyframe. Currently supported values are `youtube`, `youtube_nocookie` and `vimeo`.
-
-### `data-title`
-
-Attribute for custom title. Leave empty to get value from noembed.com.
-
-### `data-thumbnail`
-
-Attribute for custom thumbnail. Leave empty to get value from noembed.com.
-
-### `data-src`
-
-The source of what you want to lazyload.
-
-### `data-ratio`
-
-The ratio of the lazyframe. Possible values: 16:9, 4:3, 1:1
-
-### `data-initinview`
-
-Set this to true if you want the resource to execute (for example video to play) when the element is in view.
+| Attribute | Description |
+| :--- | :--- |
+| `data-src` | **Required.** The source URL for the content you want to lazy-load. Any query parameters on this URL will be preserved. |
+| `data-vendor` | Specifies the vendor for theming the placeholder. Supported values: `youtube`, `youtube_nocookie`, `vimeo`. |
+| `data-title` | Sets a custom title. If omitted for a known vendor, the title is fetched from the `noembed.com` API. |
+| `data-thumbnail` | Sets a custom thumbnail URL. If omitted for a known vendor, the thumbnail is fetched from the API. |
+| `data-ratio` | Controls the aspect ratio of the placeholder. Possible values: `16:9`, `4:3`, `1:1`. |
+| `data-lazyload` | Overrides the global `lazyload` setting. Set to `"false"` to force this instance to initialize on page load. |
+| `data-autoplay` | Overrides the global `autoplay` setting. Set to `"false"` to prevent autoplay for this instance. |
+| `data-initinview` | Overrides the global `initinview` setting. Set to `"true"` to initialize the iframe when it enters the viewport. |
+| `data-show-play-button` | Overrides the global `showPlayButton` setting. Set to `"false"` to prevent the play button from being added. |
+| `data-load-thumbnail` | Overrides the global `loadThumbnail` setting. Set to `"false"` to prevent the thumbnail background from being applied. |
 
 ## License
 

@@ -1,10 +1,10 @@
 import { babel } from "@rollup/plugin-babel";
+import typescript from '@rollup/plugin-typescript';
 import { terser } from "rollup-plugin-terser";
 import scss from "rollup-plugin-scss";
-import modify from 'rollup-plugin-modify'
 
 export default {
-  input: "src/lazyframe.js",
+  input: "src/lazyframe.ts",
   output: {
     file: "dist/lazyframe.min.js",
     format: "umd",
@@ -13,15 +13,15 @@ export default {
     sourcemap: false,
   },
   plugins: [
-    modify({
-      find: "import './scss/lazyframe.scss?raw';",
-      replace: "import './scss/lazyframe.scss';",
-    }),
+    typescript(), // Re-added typescript plugin
     babel({
+      babelrc: true, // Use babel.config.json
       exclude: "node_modules/**",
-      babelHelpers: "bundled",
+      babelHelpers: "runtime", // Use runtime helpers
     }),
+
     terser(),
+
     scss({
       output: "dist/lazyframe.css",
       outputStyle: "compressed",
