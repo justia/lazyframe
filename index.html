@@ -6,12 +6,28 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <link rel="stylesheet" href="./dist/lazyframe.css">
     <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
-            padding: 0;
+            padding: 1rem 1rem 4rem;
             font-size: 16px;
             line-height: 1.5;
             font-family: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+        }
+
+        code {
+            font-size: 0.875em;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            color: #d73a49;
+            border: 1px solid #e0e1e6;
+            border-radius: 0.375em;
+            padding: 0.125em 0.375em;
+            background-color: #fff;
         }
 
         h1 {
@@ -19,12 +35,19 @@
             width: fit-content;
             margin: 0.67em auto;
             font-size: clamp(2rem, 5vw, 4rem);
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
         }
 
         h2 {
             width: 100%;
             font-size: clamp(1.5rem, 3vw, 2.5rem);
-            margin: 0.75em 0 0;
+            margin: 0.75em 0;
+            text-align: center;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            margin: 0 0 0.83em;
             text-align: center;
         }
 
@@ -32,18 +55,48 @@
             margin: 0 0 1em;
         }
 
-        .container {
+        p:last-child {
+            margin: 0;
+        }
+
+        hr {
+            width: 100%;
+            border: solid #d4d4d4;
+            border-width: 1px 0 0;
+            margin: 5rem 0;
+        }
+
+        blockquote {
+            padding: 0.5rem 1rem;
+            margin: 40px auto;
+            border-left: 0.25em solid #818b98;
+            background-color: #818b981a;
+            width: fit-content;
+        }
+
+        blockquote.error {
+            border-color: #d73a49;
+            background-color: #d73a491a;
+        }
+
+        .samples {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
             align-items: start;
             gap: 2rem;
-            width: 100%;
-            padding: 1rem;
+        }
+
+        .samples + .samples {
+            margin-top: 2rem;
         }
 
         .sample {
             width: min(100%, 500px);
+        }
+
+        .sample p {
+            text-align: center;
         }
 
         .lazyframe--custom {
@@ -73,49 +126,279 @@
     </style>
 </head>
 <body>
-    <h1><code>@justia/lazyframe</code></h1>
+    <h1>@justia/lazyframe</h1>
 
-    <div class="container">
-        <h2>YouTube</h2>
-        <div class="sample">
-            <p>Elevate Nocookie example</p>
-            <div class="lazyframe" data-src="https://www.youtube-nocookie.com/embed/EO9inlOjZGg?rel=0" data-vendor="youtube" data-title="Main Theme - The Legend of Zelda: Tears of the Kingdom OST"></div>
+        <h2>Vendors</h2>
+
+        <blockquote>Title fetched from the <code>noembed.com</code> API.</blockquote>
+
+        <div class="samples">
+            <div class="sample">
+                <p>
+                    <strong>YouTube</strong><br>
+                    <code>data-vendor="youtube"</code>
+                </p>
+                <div class="lazyframe" data-src="https://www.youtube.com/embed/ara1uUvajoU" data-vendor="youtube"></div>
+            </div>
+            <div class="sample">
+                <p>
+                    <strong>YouTube (nocookie)</strong><br>
+                    Set with <code>data-vendor="youtube"</code>
+                </p>
+                <div class="lazyframe" data-src="https://www.youtube-nocookie.com/embed/EO9inlOjZGg?rel=0" data-vendor="youtube"></div>
+            </div>
+            <div class="sample">
+                <p>
+                    <strong>YouTube (nocookie)</strong><br>
+                    Set with <code>data-vendor="youtube_nocookie"</code>
+                </p>
+                <div class="lazyframe" data-src="https://www.youtube-nocookie.com/embed/EO9inlOjZGg?rel=0" data-vendor="youtube_nocookie"></div>
+            </div>
+            <div class="sample">
+                <p>
+                    <strong>Vimeo</strong><br>
+                    <code>data-vendor="vimeo"</code>
+                </p>
+                <div class="lazyframe" data-src="https://vimeo.com/111049676" data-vendor="vimeo"></div>
+            </div>
         </div>
 
-        <div class="sample">
-            <p>Video with thumbnail and title from API</p>
-            <div class="lazyframe" data-src="https://www.youtube.com/embed/ara1uUvajoU" data-vendor="youtube"></div>
+        <hr>
+
+        <h2>Custom Title (<code>data-title</code>)</h2>
+
+        <div class="samples">
+            <div class="sample">
+                <p><strong>YouTube</strong></p>
+                <div class="lazyframe" data-src="https://www.youtube.com/embed/ara1uUvajoU" data-vendor="youtube" data-title="Consectetur ipsum laboris eiusmod fugiat laboris fugiat occaecat ex culpa excepteur laboris veniam."></div>
+            </div>
+            <div class="sample">
+                <p><strong>YouTube (nocookie)</strong></p>
+                <div class="lazyframe" data-src="https://www.youtube-nocookie.com/embed/EO9inlOjZGg?rel=0" data-vendor="youtube_nocookie" data-title="Aliqua nulla nulla aliquip aliqua eu ex."></div>
+            </div>
+            <div class="sample">
+                <p><strong>Vimeo</strong></p>
+                <div class="lazyframe" data-src="https://vimeo.com/111049676" data-vendor="vimeo" data-title="Consequat id nulla fugiat sint pariatur enim laboris consectetur officia reprehenderit cillum ipsum."></div>
+            </div>
         </div>
 
-        <div class="sample">
-            <p>Video with custom thumbnail and title</p>
-            <div class="lazyframe" data-src="https://www.youtube.com/embed/ara1uUvajoU" data-vendor="youtube" data-title="Custom title" data-thumbnail="https://picsum.photos/id/237/500/281"></div>
+        <hr>
+
+        <h2>Custom Thumbnail (<code>data-thumbnail</code>)</h2>
+
+        <div class="samples">
+            <div class="sample">
+                <p><strong>YouTube</strong></p>
+                <div class="lazyframe" data-src="https://www.youtube.com/embed/ara1uUvajoU" data-vendor="youtube" data-thumbnail="https://picsum.photos/id/55/500/281"></div>
+            </div>
+            <div class="sample">
+                <p><strong>YouTube (nocookie)</strong></p>
+                <div class="lazyframe" data-src="https://www.youtube-nocookie.com/embed/EO9inlOjZGg?rel=0" data-vendor="youtube_nocookie" data-thumbnail="https://picsum.photos/id/69/500/281"></div>
+            </div>
+            <div class="sample">
+                <p><strong>Vimeo</strong></p>
+                <div class="lazyframe" data-src="https://vimeo.com/111049676" data-vendor="vimeo" data-thumbnail="https://picsum.photos/id/56/500/281"></div>
+            </div>
         </div>
 
-        <h2>Vimeo</h2>
+        <hr>
 
-        <div class="sample">
-            <p>Video with thumbnail and title from API</p>
-            <div class="lazyframe" data-src="https://vimeo.com/111049676" data-vendor="vimeo"></div>
+        <h2>Custom Ratio (<code>data-ratio</code>)</h2>
+
+        <h3><code>data-ratio="16:9"</code> (Default)</h3>
+
+        <div class="samples">
+            <div class="sample">
+                <p><strong>YouTube</strong></p>
+                <div class="lazyframe" data-src="https://www.youtube.com/embed/ara1uUvajoU" data-vendor="youtube" data-ratio="16:9"></div>
+            </div>
+            <div class="sample">
+                <p><strong>YouTube (nocookie)</strong></p>
+                <div class="lazyframe" data-src="https://www.youtube-nocookie.com/embed/EO9inlOjZGg?rel=0" data-vendor="youtube_nocookie" data-ratio="16:9"></div>
+            </div>
+            <div class="sample">
+                <p><strong>Vimeo</strong></p>
+                <div class="lazyframe" data-src="https://vimeo.com/111049676" data-vendor="vimeo" data-ratio="16:9"></div>
+            </div>
         </div>
 
-        <div class="sample">
-            <p>Video with custom thumbnail and title</p>
-            <div class="lazyframe" data-src="https://vimeo.com/183524061" data-vendor="vimeo" data-title="Custom title" data-thumbnail="https://picsum.photos/id/190/500/281"></div>
+        <h3><code>data-ratio="4:3"</code></h3>
+
+        <blockquote class="error">Doesn't seem to work</blockquote>
+
+        <div class="samples">
+            <div class="sample">
+                <p><strong>YouTube</strong></p>
+                <div class="lazyframe" data-src="https://www.youtube.com/embed/ara1uUvajoU" data-vendor="youtube" data-ratio="4:3"></div>
+            </div>
+            <div class="sample">
+                <p><strong>YouTube (nocookie)</strong></p>
+                <div class="lazyframe" data-src="https://www.youtube-nocookie.com/embed/EO9inlOjZGg?rel=0" data-vendor="youtube_nocookie" data-ratio="4:3"></div>
+            </div>
+            <div class="sample">
+                <p><strong>Vimeo</strong></p>
+                <div class="lazyframe" data-src="https://vimeo.com/111049676" data-vendor="vimeo" data-ratio="4:3"></div>
+            </div>
         </div>
 
-        <h2>Iframe</h2>
+        <h3><code>data-ratio="1:1"</code></h3>
 
-        <div class="sample">
-            <p>Iframe with custom theme and title</p>
-            <div class="lazyframe lazyframe--custom" data-src="https://www.surveymonkey.com/r/?sm=%2bd%2bdWobuoz7irMV%2fpzKPcJmrKosuGWSraJtIrFQ4wBQ%3d" data-title="Something completely different"></div>
+        <blockquote class="error">Doesn't seem to work</blockquote>
+
+        <div class="samples">
+            <div class="sample">
+                <p><strong>YouTube</strong></p>
+                <div class="lazyframe" data-src="https://www.youtube.com/embed/ara1uUvajoU" data-vendor="youtube" data-ratio="1:1"></div>
+            </div>
+            <div class="sample">
+                <p><strong>YouTube (nocookie)</strong></p>
+                <div class="lazyframe" data-src="https://www.youtube-nocookie.com/embed/EO9inlOjZGg?rel=0" data-vendor="youtube_nocookie" data-ratio="1:1"></div>
+            </div>
+            <div class="sample">
+                <p><strong>Vimeo</strong></p>
+                <div class="lazyframe" data-src="https://vimeo.com/111049676" data-vendor="vimeo" data-ratio="1:1"></div>
+            </div>
         </div>
 
-        <div class="sample">
-            <p>Google maps iframe with custom thumbnail and title that gets executed when in view</p>
-            <div class="lazyframe lazyframe--custom" data-src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d338.39606511410227!2d-100.98236914799563!3d25.45548098768475!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x86886d5a969c813d%3A0xbcf88865224ad3d3!2sJustia%20M%C3%A9xico!5e0!3m2!1sen!2smx!4v1764277131614!5m2!1sen!2smx" data-title="Something completely different" data-initinview="true"></div>
+        <hr>
+
+        <h2>Eager Loading (<code>data-lazyload</code>)</h2>
+
+        <blockquote>Default: <code>true</code></blockquote>
+        <blockquote class="error">Not working!</blockquote>
+
+        <div class="samples">
+            <div class="sample">
+                <p><strong>YouTube</strong></p>
+                <div class="lazyframe" data-src="https://www.youtube.com/embed/ara1uUvajoU" data-vendor="youtube" data-lazyload="false"></div>
+            </div>
+            <div class="sample">
+                <p><strong>YouTube (nocookie)</strong></p>
+                <div class="lazyframe" data-src="https://www.youtube-nocookie.com/embed/EO9inlOjZGg?rel=0" data-vendor="youtube_nocookie" data-lazyload="false"></div>
+            </div>
+            <div class="sample">
+                <p><strong>Vimeo</strong></p>
+                <div class="lazyframe" data-src="https://vimeo.com/111049676" data-vendor="vimeo" data-lazyload="false"></div>
+            </div>
         </div>
-    </div>
+
+        <hr>
+
+        <h2>Autoplay (<code>data-autoplay</code>)</h2>
+
+        <blockquote>Default: <code>true</code></blockquote>
+
+        <div class="samples">
+            <div class="sample">
+                <p><strong>YouTube</strong></p>
+                <div class="lazyframe" data-src="https://www.youtube.com/embed/ara1uUvajoU" data-vendor="youtube" data-autoplay="false"></div>
+            </div>
+            <div class="sample">
+                <p><strong>YouTube (nocookie)</strong></p>
+                <div class="lazyframe" data-src="https://www.youtube-nocookie.com/embed/EO9inlOjZGg?rel=0" data-vendor="youtube_nocookie" data-autoplay="false"></div>
+            </div>
+            <div class="sample">
+                <p><strong>Vimeo</strong></p>
+                <div class="lazyframe" data-src="https://vimeo.com/111049676" data-vendor="vimeo" data-autoplay="false"></div>
+            </div>
+        </div>
+
+        <hr>
+
+        <h2>Initialize In View (<code>data-initinview</code>)</h2>
+
+        <blockquote>Default: <code>false</code></blockquote>
+
+        <div class="samples">
+            <div class="sample">
+                <p><strong>YouTube</strong></p>
+                <div class="lazyframe" data-src="https://www.youtube.com/embed/ara1uUvajoU" data-vendor="youtube" data-initinview="true"></div>
+            </div>
+            <div class="sample">
+                <p><strong>YouTube (nocookie)</strong></p>
+                <div class="lazyframe" data-src="https://www.youtube-nocookie.com/embed/EO9inlOjZGg?rel=0" data-vendor="youtube_nocookie" data-initinview="true"></div>
+            </div>
+            <div class="sample">
+                <p><strong>Vimeo</strong></p>
+                <div class="lazyframe" data-src="https://vimeo.com/111049676" data-vendor="vimeo" data-initinview="true"></div>
+            </div>
+        </div>
+
+        <hr>
+
+        <h2>Play Button Creation (<code>data-show-play-button</code>)</h2>
+
+        <blockquote>Default: <code>true</code></blockquote>
+
+        <div class="samples">
+            <div class="sample">
+                <p><strong>YouTube</strong></p>
+                <div class="lazyframe" data-src="https://www.youtube.com/embed/ara1uUvajoU" data-vendor="youtube" data-show-play-button="false"></div>
+            </div>
+            <div class="sample">
+                <p><strong>YouTube (nocookie)</strong></p>
+                <div class="lazyframe" data-src="https://www.youtube-nocookie.com/embed/EO9inlOjZGg?rel=0" data-vendor="youtube_nocookie" data-show-play-button="false"></div>
+            </div>
+            <div class="sample">
+                <p><strong>Vimeo</strong></p>
+                <div class="lazyframe" data-src="https://vimeo.com/111049676" data-vendor="vimeo" data-show-play-button="false"></div>
+            </div>
+        </div>
+
+        <hr>
+
+        <h2>Thumbnail Loading (<code>data-load-thumbnail</code>)</h2>
+
+        <blockquote>
+            <p>Default: <code>true</code></p>
+            <p>Even if I set the <code>data-thumbnail</code> attribute with a custom image.</p>
+        </blockquote>
+
+        <div class="samples">
+            <div class="sample">
+                <p><strong>YouTube</strong></p>
+                <div class="lazyframe" data-src="https://www.youtube.com/embed/ara1uUvajoU" data-vendor="youtube" data-load-thumbnail="false"></div>
+            </div>
+            <div class="sample">
+                <p><strong>YouTube (nocookie)</strong></p>
+                <div class="lazyframe" data-src="https://www.youtube-nocookie.com/embed/EO9inlOjZGg?rel=0" data-vendor="youtube_nocookie" data-load-thumbnail="false"></div>
+            </div>
+            <div class="sample">
+                <p><strong>Vimeo</strong></p>
+                <div class="lazyframe" data-src="https://vimeo.com/111049676" data-vendor="vimeo" data-load-thumbnail="false"></div>
+            </div>
+        </div>
+        <div class="samples">
+            <div class="sample">
+                <p><strong>YouTube</strong></p>
+                <div class="lazyframe" data-src="https://www.youtube.com/embed/ara1uUvajoU" data-vendor="youtube" data-thumbnail="https://picsum.photos/id/55/500/281" data-load-thumbnail="false"></div>
+            </div>
+            <div class="sample">
+                <p><strong>YouTube (nocookie)</strong></p>
+                <div class="lazyframe" data-src="https://www.youtube-nocookie.com/embed/EO9inlOjZGg?rel=0" data-vendor="youtube_nocookie" data-thumbnail="https://picsum.photos/id/69/500/281" data-load-thumbnail="false"></div>
+            </div>
+            <div class="sample">
+                <p><strong>Vimeo</strong></p>
+                <div class="lazyframe" data-src="https://vimeo.com/111049676" data-vendor="vimeo" data-thumbnail="https://picsum.photos/id/56/500/281" data-load-thumbnail="false"></div>
+            </div>
+        </div>
+
+        <hr>
+
+        <h2>Iframes</h2>
+
+        <div class="samples">
+            <div class="sample">
+                <p>Iframe with custom theme and title</p>
+                <div class="lazyframe lazyframe--custom" data-src="https://www.surveymonkey.com/r/?sm=%2bd%2bdWobuoz7irMV%2fpzKPcJmrKosuGWSraJtIrFQ4wBQ%3d" data-title="Click to load"></div>
+            </div>
+
+            <div class="sample">
+                <p>Google maps iframe with custom thumbnail and title that gets executed when in view</p>
+                <div class="lazyframe lazyframe--custom" data-src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d338.39606511410227!2d-100.98236914799563!3d25.45548098768475!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x86886d5a969c813d%3A0xbcf88865224ad3d3!2sJustia%20M%C3%A9xico!5e0!3m2!1sen!2smx!4v1764277131614!5m2!1sen!2smx" data-title="You may not see this" data-initinview="true"></div>
+            </div>
+        </div>
+
     <script src="./dist/lazyframe.min.js"></script>
     <script>lazyframe('.lazyframe');</script>
     <script>lazyframe('.lazyframe');</script>
