@@ -1,10 +1,30 @@
 {
   "name": "@justia/lazyframe",
-  "description": "Dependency-free library for lazyloading iframes",
   "version": "2.4.1",
-  "author": "Viktor Bergehall",
+  "description": "Dependency-free library for lazyloading iframes",
   "bugs": {
     "url": "https://github.com/justia/lazyframe/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/justia/lazyframe.git"
+  },
+  "license": "MIT",
+  "author": "Viktor Bergehall",
+  "main": "dist/lazyframe.min.js",
+  "module": "dist/lazyframe.esm.js",
+  "types": "dist/lazyframe.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "prebuild": "rm -rf dist/",
+    "build": "rollup --config rollup.config.ts --configPlugin typescript",
+    "dev": "rollup --config rollup.config.ts --configPlugin typescript --watch",
+    "format": "prettier --write '**/*.{json,ts,js,html,scss}' && sort-package-json",
+    "test": "npm run build && ava -s",
+    "test:watch": "npm run build && ava -s -w",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@rollup/plugin-terser": "^0.4.4",
@@ -21,37 +41,5 @@
     "sort-package-json": "^3.5.0",
     "tslib": "^2.8.1",
     "typescript": "^5.9.3"
-  },
-  "homepage": "https://vb.github.io/lazyframe",
-  "keywords": [
-    "embed",
-    "iframe",
-    "javascript",
-    "lazyload",
-    "lazyloading",
-    "pageload",
-    "pagespeed",
-    "vimeo",
-    "youtube"
-  ],
-  "license": "MIT",
-  "main": "dist/lazyframe.min.js",
-  "module": "dist/lazyframe.esm.js",
-  "types": "dist/lazyframe.d.ts",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/justia/lazyframe.git"
-  },
-  "scripts": {
-    "prebuild": "rm -rf dist/",
-    "build": "rollup --config rollup.config.ts --configPlugin typescript",
-    "dev": "rollup --config rollup.config.ts --configPlugin typescript --watch",
-    "format": "prettier --write '**/*.{json,ts,js,html,scss}' && sort-package-json",
-    "test": "npm run build && ava -s",
-    "test:watch": "npm run build && ava -s -w",
-    "typecheck": "tsc --noEmit"
-  },
-  "files": [
-    "dist"
-  ]
+  }
 }

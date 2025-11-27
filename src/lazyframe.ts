@@ -50,23 +50,24 @@ const providers: Record<Vendor, VideoProvider> = {
     youtube: {
         regex: /(?:youtube\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\?(?:\S*?&?v\=))|youtu\.be\/)([a-zA-Z0-9_-]{6,11})/,
         condition: (m) => (m && m[1].length === 11 ? m[1] : false),
-        buildSrc: (s) => `https://www.youtube.com/embed/${s.id}/?autoplay=${s.autoplay ? "1" : "0"}&${s.query || ''}`,
+        buildSrc: (s) => `https://www.youtube.com/embed/${s.id}/?autoplay=${s.autoplay ? '1' : '0'}&${s.query || ''}`,
     },
     youtube_nocookie: {
         regex: /(?:youtube-nocookie\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\?(?:\S*?&?v\=)))([a-zA-Z0-9_-]{6,11})/,
         condition: (m) => (m && m[1].length === 11 ? m[1] : false),
-        buildSrc: (s) => `https://www.youtube-nocookie.com/embed/${s.id}/?autoplay=${s.autoplay ? "1" : "0"}&${s.query || ''}`,
+        buildSrc: (s) =>
+            `https://www.youtube-nocookie.com/embed/${s.id}/?autoplay=${s.autoplay ? '1' : '0'}&${s.query || ''}`,
     },
     vimeo: {
         regex: /vimeo\.com\/(?:video\/)?([0-9]*)(?:\?|)/,
-        condition: (m) => (m && m[1].length > 0) ? m[1] : false,
-        buildSrc: (s) => `https://player.vimeo.com/video/${s.id}/?autoplay=${s.autoplay ? "1" : "0"}&${s.query || ''}`,
+        condition: (m) => (m && m[1].length > 0 ? m[1] : false),
+        buildSrc: (s) => `https://player.vimeo.com/video/${s.id}/?autoplay=${s.autoplay ? '1' : '0'}&${s.query || ''}`,
     },
 };
 
 // --- Library Code ---
 
-    const Lazyframe = () => {
+const Lazyframe = () => {
     let settings: LazyframeOptions;
     const elements: Map<HTMLElement, LazyframeInstance> = new Map();
     const defaults: LazyframeSettings = {
@@ -78,7 +79,7 @@ const providers: Record<Vendor, VideoProvider> = {
         showPlayButton: true,
         onLoad: () => {},
         onAppend: () => {},
-        onThumbnailLoad: () => {}
+        onThumbnailLoad: () => {},
     };
 
     const constants = {
@@ -148,14 +149,14 @@ const providers: Record<Vendor, VideoProvider> = {
 
     function setup(el: HTMLElement): LazyframeSettings {
         const data = { ...el.dataset };
-        
+
         // Merge defaults, user settings, and data attributes in order of precedence
         const initialOptions: LazyframeSettings = {
             ...settings, // Global settings
-            ...data,     // Data attributes (will overwrite global settings if present)
+            ...data, // Data attributes (will overwrite global settings if present)
             initialized: false, // Always start as not initialized
             originalSrc: data.src,
-            query: getQuery(data.src)
+            query: getQuery(data.src),
         };
 
         // Explicitly parse boolean attributes, ensuring they take final precedence
@@ -229,13 +230,12 @@ const providers: Record<Vendor, VideoProvider> = {
                     instance.settings.onThumbnailLoad(url);
                 }
             }
-            
-            build(instance, true);
 
+            build(instance, true);
         } catch (error) {
-            console.error("Lazyframe API call failed:", error);
+            console.error('Lazyframe API call failed:', error);
             // Build the frame anyway so the user experience isn't broken
-            build(instance, true); 
+            build(instance, true);
         }
     }
 
@@ -265,7 +265,7 @@ const providers: Record<Vendor, VideoProvider> = {
             if (instance.settings.onLoad) {
                 instance.settings.onLoad(instance);
             }
-        }
+        };
 
         if ('IntersectionObserver' in window) {
             const lazyframeObserver = new IntersectionObserver((entries) => {
@@ -312,7 +312,7 @@ const providers: Record<Vendor, VideoProvider> = {
 
         if (!settings.lazyload) {
             instance.el.classList.add('lazyframe--loaded');
-            if(instance.settings.onLoad) {
+            if (instance.settings.onLoad) {
                 instance.settings.onLoad(instance);
             }
         }
@@ -341,7 +341,7 @@ const providers: Record<Vendor, VideoProvider> = {
         return iframeNode;
     }
     return init;
-}
+};
 
 const lazyframe = Lazyframe();
 

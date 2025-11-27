@@ -2,17 +2,17 @@ const providers = {
     youtube: {
         regex: /(?:youtube\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\?(?:\S*?&?v\=))|youtu\.be\/)([a-zA-Z0-9_-]{6,11})/,
         condition: (m) => (m && m[1].length === 11 ? m[1] : false),
-        buildSrc: (s) => `https://www.youtube.com/embed/${s.id}/?autoplay=${s.autoplay ? "1" : "0"}&${s.query || ''}`,
+        buildSrc: (s) => `https://www.youtube.com/embed/${s.id}/?autoplay=${s.autoplay ? '1' : '0'}&${s.query || ''}`,
     },
     youtube_nocookie: {
         regex: /(?:youtube-nocookie\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\?(?:\S*?&?v\=)))([a-zA-Z0-9_-]{6,11})/,
         condition: (m) => (m && m[1].length === 11 ? m[1] : false),
-        buildSrc: (s) => `https://www.youtube-nocookie.com/embed/${s.id}/?autoplay=${s.autoplay ? "1" : "0"}&${s.query || ''}`,
+        buildSrc: (s) => `https://www.youtube-nocookie.com/embed/${s.id}/?autoplay=${s.autoplay ? '1' : '0'}&${s.query || ''}`,
     },
     vimeo: {
         regex: /vimeo\.com\/(?:video\/)?([0-9]*)(?:\?|)/,
-        condition: (m) => (m && m[1].length > 0) ? m[1] : false,
-        buildSrc: (s) => `https://player.vimeo.com/video/${s.id}/?autoplay=${s.autoplay ? "1" : "0"}&${s.query || ''}`,
+        condition: (m) => (m && m[1].length > 0 ? m[1] : false),
+        buildSrc: (s) => `https://player.vimeo.com/video/${s.id}/?autoplay=${s.autoplay ? '1' : '0'}&${s.query || ''}`,
     },
 };
 // --- Library Code ---
@@ -28,7 +28,7 @@ const Lazyframe = () => {
         showPlayButton: true,
         onLoad: () => { },
         onAppend: () => { },
-        onThumbnailLoad: () => { }
+        onThumbnailLoad: () => { },
     };
     const constants = {
         endpoint: (s) => {
@@ -93,7 +93,7 @@ const Lazyframe = () => {
             ...data, // Data attributes (will overwrite global settings if present)
             initialized: false, // Always start as not initialized
             originalSrc: data.src,
-            query: getQuery(data.src)
+            query: getQuery(data.src),
         };
         // Explicitly parse boolean attributes, ensuring they take final precedence
         const options = {
@@ -160,7 +160,7 @@ const Lazyframe = () => {
             build(instance, true);
         }
         catch (error) {
-            console.error("Lazyframe API call failed:", error);
+            console.error('Lazyframe API call failed:', error);
             // Build the frame anyway so the user experience isn't broken
             build(instance, true);
         }
