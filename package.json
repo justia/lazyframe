@@ -12,11 +12,13 @@
     "@types/node": "^24.10.1",
     "ava": "^6.4.1",
     "jsdom": "^27.1.0",
+    "prettier": "^3.7.1",
     "rollup": "^4.53.3",
     "rollup-plugin-livereload": "^2.0.5",
     "rollup-plugin-scss": "^4.0.1",
     "rollup-plugin-serve": "^3.0.0",
     "sass": "^1.42.1",
+    "sort-package-json": "^3.5.0",
     "tslib": "^2.8.1",
     "typescript": "^5.9.3"
   },
@@ -44,6 +46,7 @@
     "prebuild": "rm -rf dist/",
     "build": "rollup --config rollup.config.ts --configPlugin typescript",
     "dev": "rollup --config rollup.config.ts --configPlugin typescript --watch",
+    "format": "prettier --write '**/*.{json,ts,js,html,scss}' && sort-package-json",
     "test": "npm run build && ava -s",
     "test:watch": "npm run build && ava -s -w",
     "typecheck": "tsc --noEmit"
