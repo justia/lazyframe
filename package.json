@@ -18,7 +18,6 @@
     "typescript": "^5.9.3"
   },
   "homepage": "https://vb.github.io/lazyframe",
-  "jsnext:main": "src/lazyframe.js",
   "keywords": [
     "embed",
     "iframe",
