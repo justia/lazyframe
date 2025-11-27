@@ -43,8 +43,8 @@
     "url": "git+https://github.com/justia/lazyframe.git"
   },
   "scripts": {
-    "build": "rollup -c",
-    "dev": "rollup -c -w",
+    "build": "rollup --config rollup.config.ts --configPlugin typescript",
+    "dev": "rollup --config rollup.config.ts --configPlugin typescript --watch",
     "test": "npm run build && ava -s",
     "test:watch": "npm run build && ava -s -w",
     "typecheck": "tsc --noEmit"
