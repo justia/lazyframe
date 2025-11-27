@@ -31,6 +31,7 @@
   ],
   "license": "MIT",
   "main": "dist/lazyframe.min.js",
+  "module": "dist/lazyframe.esm.js",
   "types": "dist/lazyframe.d.ts",
   "repository": {
     "type": "git",
