@@ -6,31 +6,51 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <link rel="stylesheet" href="./dist/lazyframe.css">
     <style>
-        .container {
-            max-width: 500px;
-            margin: 0 auto;
-            width: 100%
+        body {
+            margin: 0;
+            padding: 0;
+            font-size: 16px;
+            line-height: 1.5;
+            font-family: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+        }
+
+        h1 {
+            display: block;
+            width: fit-content;
+            margin: 0.67em auto;
+            font-size: clamp(2rem, 5vw, 4rem);
+        }
+
+        h2 {
+            width: 100%;
+            font-size: clamp(1.5rem, 3vw, 2.5rem);
+            margin: 0.75em 0 0;
+            text-align: center;
         }
 
         p {
-            font-family: "Helvetica Neue", Helvetica, Arial
+            margin: 0 0 1em;
         }
 
-        .lazyframe {
-            margin-bottom: 100px
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: start;
+            gap: 2rem;
+            width: 100%;
+            padding: 1rem;
+        }
+
+        .sample {
+            width: min(100%, 500px);
         }
 
         .lazyframe--custom {
-            background: #bada55;
-            display: -webkit-box;
-            display: -ms-flexbox;
+            background-color: #bada55;
             display: flex;
-            -webkit-box-align: center;
-            -ms-flex-align: center;
             align-items: center;
             text-align: center;
-            -webkit-box-pack: center;
-            -ms-flex-pack: center;
             justify-content: center
         }
 
@@ -38,38 +58,63 @@
             position: relative;
             width: 100%;
             display: block;
-            font-size: 32px;
+            font-size: 2rem;
             font-family: Arial;
-            color: #fff
+            color: #fff;
+        }
+
+        .lazyframe--custom .lf-play-btn {
+            display: none;
         }
 
         .lazyframe--custom::before {
-            width: auto
+            width: auto;
         }
     </style>
 </head>
 <body>
+    <h1><code>@justia/lazyframe</code></h1>
+
     <div class="container">
-        <p>Elevate Youtube Nocookie example</p>
-        <div class="lazyframe" data-src="https://www.youtube-nocookie.com/embed/EO9inlOjZGg?rel=0" data-vendor="youtube" data-title="Main Theme - The Legend of Zelda: Tears of the Kingdom OST"></div>
+        <h2>YouTube</h2>
+        <div class="sample">
+            <p>Elevate Nocookie example</p>
+            <div class="lazyframe" data-src="https://www.youtube-nocookie.com/embed/EO9inlOjZGg?rel=0" data-vendor="youtube" data-title="Main Theme - The Legend of Zelda: Tears of the Kingdom OST"></div>
+        </div>
 
-        <p>Youtube video with thumbnail and title from API</p>
-        <div class="lazyframe" data-src="https://www.youtube.com/embed/ara1uUvajoU" data-vendor="youtube"></div>
+        <div class="sample">
+            <p>Video with thumbnail and title from API</p>
+            <div class="lazyframe" data-src="https://www.youtube.com/embed/ara1uUvajoU" data-vendor="youtube"></div>
+        </div>
 
-        <p>Youtube video with custom thumbnail and title</p>
-        <div class="lazyframe" data-src="https://www.youtube.com/embed/ara1uUvajoU" data-vendor="youtube" data-title="Custom title" data-thumbnail="https://picsum.photos/id/237/500/281"></div>
+        <div class="sample">
+            <p>Video with custom thumbnail and title</p>
+            <div class="lazyframe" data-src="https://www.youtube.com/embed/ara1uUvajoU" data-vendor="youtube" data-title="Custom title" data-thumbnail="https://picsum.photos/id/237/500/281"></div>
+        </div>
 
-        <p>Vimeo video with thumbnail and title from API</p>
-        <div class="lazyframe" data-src="https://vimeo.com/111049676" data-vendor="vimeo"></div>
+        <h2>Vimeo</h2>
 
-        <p>Vimeo video with custom thumbnail and title</p>
-        <div class="lazyframe" data-src="https://vimeo.com/183524061" data-vendor="vimeo" data-title="Custom title" data-thumbnail="https://picsum.photos/id/190/500/281"></div>
+        <div class="sample">
+            <p>Video with thumbnail and title from API</p>
+            <div class="lazyframe" data-src="https://vimeo.com/111049676" data-vendor="vimeo"></div>
+        </div>
 
-        <p>Iframe with custom theme and title</p>
-        <div class="lazyframe lazyframe--custom" data-src="https://www.surveymonkey.com/r/?sm=%2bd%2bdWobuoz7irMV%2fpzKPcJmrKosuGWSraJtIrFQ4wBQ%3d" data-title="Something completely different"></div>
+        <div class="sample">
+            <p>Video with custom thumbnail and title</p>
+            <div class="lazyframe" data-src="https://vimeo.com/183524061" data-vendor="vimeo" data-title="Custom title" data-thumbnail="https://picsum.photos/id/190/500/281"></div>
+        </div>
 
-        <p>Google maps iframe with custom thumbnail and title that gets executed when in view</p>
-        <div class="lazyframe lazyframe--custom" data-src="https://www.google.com/maps/embed/v1/place?q=place_id:ChIJ8fA1bTmyXEYRYm-tjaLruCI&key=AIzaSyDQxRfx3HQrE0_oTFI2WHzoiGL_CM0JJfQ" data-title="Something completely different" data-initinview="true"></div>
+        <h2>Iframe</h2>
+
+        <div class="sample">
+            <p>Iframe with custom theme and title</p>
+            <div class="lazyframe lazyframe--custom" data-src="https://www.surveymonkey.com/r/?sm=%2bd%2bdWobuoz7irMV%2fpzKPcJmrKosuGWSraJtIrFQ4wBQ%3d" data-title="Something completely different"></div>
+        </div>
+
+        <div class="sample">
+            <p>Google maps iframe with custom thumbnail and title that gets executed when in view</p>
+            <div class="lazyframe lazyframe--custom" data-src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d338.39606511410227!2d-100.98236914799563!3d25.45548098768475!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x86886d5a969c813d%3A0xbcf88865224ad3d3!2sJustia%20M%C3%A9xico!5e0!3m2!1sen!2smx!4v1764277131614!5m2!1sen!2smx" data-title="Something completely different" data-initinview="true"></div>
+        </div>
     </div>
     <script src="./dist/lazyframe.min.js"></script>
     <script>lazyframe('.lazyframe');</script>
