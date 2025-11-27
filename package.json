@@ -1,8 +1,7 @@
 {
   "name": "@justia/lazyframe",
-  "description": "Dependency-free library for lazyloading iframes",
   "version": "2.4.1",
-  "author": "Viktor Bergehall",
+  "description": "Dependency-free library for lazyloading iframes",
   "bugs": {
     "url": "https://github.com/justia/lazyframe/issues"
   },
