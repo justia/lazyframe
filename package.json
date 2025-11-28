@@ -21,6 +21,7 @@
     "prebuild": "rm -rf dist/",
     "build": "rollup --config rollup.config.ts --configPlugin typescript",
     "dev": "rollup --config rollup.config.ts --configPlugin typescript --watch",
+    "postdev": "rm -rf demo/assets/demo.css demo/assets/demo.js",
     "format": "prettier --write '**/*.{json,ts,js,html,scss}' && sort-package-json",
     "test": "npm run build && ava -s",
     "test:watch": "npm run build && ava -s -w",
