@@ -23,19 +23,14 @@
         cursor: pointer;
     }
 
-    &::before {
-        display: block;
-        content: '';
-        width: 100%;
-        padding-top: 56.25%;
+    aspect-ratio: 16 / 9;
+
+    &[data-ratio='4:3'] {
+        aspect-ratio: 4 / 3;
     }
 
-    &[data-ratio='4:3']::before {
-        padding-top: 75%;
-    }
-
-    &[data-ratio='1:1']::before {
-        padding-top: 100%;
+    &[data-ratio='1:1'] {
+        aspect-ratio: 1 / 1;
     }
 
     iframe {
