@@ -174,11 +174,10 @@ const Lazyframe = () => {
             showPlayButton: parseBoolean(data.showPlayButton, initialOptions.showPlayButton),
         };
 
-        if (options.src?.includes('youtube-nocookie')) {
+        if (options.src.includes('youtube-nocookie')) {
             options.vendor = 'youtube_nocookie';
         }
-
-        if (options.vendor && options.src) {
+        if (options.vendor) {
             const provider = providers[options.vendor];
 
             if (provider) {
