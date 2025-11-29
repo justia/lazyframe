@@ -32,6 +32,8 @@ type LazyframeDatasetStringOptions = {
     initinview?: StringBoolean;
     loadThumbnail?: StringBoolean;
     showPlayButton?: StringBoolean;
+    // Programatically added. Is not meant to be set manually by the user.
+    lazyloadReady?: StringBoolean;
 };
 
 // 2. The Transformation Type
@@ -159,7 +161,7 @@ const Lazyframe = () => {
         // There's cases where the `lazyload` library is loaded in two
         // different scripts, so we set a flag to know if an iframe
         // was already handled by lazyload previously
-        if (instance.el.dataset.lazyloadReady === '1') return;
+        if (el.dataset.lazyloadReady === 'true') return;
 
         const instance: LazyframeInstance = {
             el,
@@ -187,7 +189,7 @@ const Lazyframe = () => {
         }
 
         // Assign this at the end to avoid polution during the setup.
-        el.dataset.lazyloadReady = '1';
+        el.dataset.lazyloadReady = 'true';
     }
 
     function setup(el: HTMLLazyframeElement): LazyframeSettings {
