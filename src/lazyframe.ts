@@ -328,10 +328,11 @@ const Lazyframe = () => {
             settings.src = providers[settings.vendor].buildSrc(settings);
         }
 
-        iframeNode.setAttribute('id', `lazyframe-${settings.id}`);
-        iframeNode.setAttribute('src', settings.src || '');
-        iframeNode.setAttribute('frameborder', '0');
-        iframeNode.setAttribute('allowfullscreen', '');
+        if (settings.id) iframeNode.id = `lazyframe-${settings.id}`;
+
+        iframeNode.src = settings.src;
+        iframeNode.frameBorder = '0';
+        iframeNode.allowFullscreen = true;
 
         if (settings.autoplay) {
             iframeNode.allow = 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture';
@@ -339,6 +340,7 @@ const Lazyframe = () => {
 
         return iframeNode;
     }
+
     return init;
 };
 
