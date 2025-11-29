@@ -106,6 +106,23 @@ const Lazyframe = () => {
             els.forEach(loop);
         }
 
+        // TODO:
+        // Observers are currently initialized regardless of the value set with the `data-lazyload` attribute.
+        // Right now, the only way to configure this behavior is by passing a `lazyload` option when calling
+        // the `lazyframe` function:
+        //
+        // ```
+        // lazyframe('.selector', { lazyload: false });
+        // ```
+        //
+        // If all elements found during initialization have `data-lazyload="false"`, the observer is still created,
+        // but it should not be.
+        //
+        // A better approach would be to use a global flag like `enableLazyloadObserver`, initialized to `false`.
+        // During initialization, if any element has `data-lazyload="true"`, the flag would be set to `true`.
+        //
+        // This ensures the observer is only created when at least one element actually requires lazy loading.
+        //
         if (programmaticOptions.lazyload) {
             setObservers();
         }
