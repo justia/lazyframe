@@ -24,9 +24,9 @@ type LazyframeOptions = {
 // Fully resolved settings for an instance, merging defaults and data-attributes
 type LazyframeSettings = LazyframeOptions & {
     initialized: boolean;
-    originalSrc?: string;
-    query?: string | null;
-}
+    originalSrc: string;
+    query?: string;
+};
 
 // The internal representation of a single lazyframe instance
 type LazyframeInstance = {
@@ -151,6 +151,10 @@ const Lazyframe = () => {
     function setup(el: HTMLElement): LazyframeSettings {
         const data = { ...el.dataset };
 
+        if (!data.src) {
+            throw new Error(`Lazyframe: The 'data-src' attribute must exist. Please make sure it is defined: ${el}`);
+        }
+
         // Merge defaults, user settings, and data attributes in order of precedence
         const initialOptions: LazyframeSettings = {
             ...settings, // Global settings
@@ -190,10 +194,9 @@ const Lazyframe = () => {
         return options;
     }
 
-    function getQuery(src: string | undefined): string | null {
-        if (!src) return null;
+    function getQuery(src: string): string | undefined {
         const query = src.split('?');
-        return query[1] ? query[1] : null;
+        return query[1] ? query[1] : undefined;
     }
 
     function useApi(settings: LazyframeSettings): boolean {
