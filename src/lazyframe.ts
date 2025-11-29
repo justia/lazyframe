@@ -5,7 +5,7 @@ import './scss/lazyframe.scss';
 type Vendor = 'youtube' | 'youtube_nocookie' | 'vimeo';
 
 // Options the user can pass during initialization
-interface LazyframeOptions {
+type LazyframeOptions = {
     vendor?: Vendor;
     id?: string;
     src?: string;
@@ -22,25 +22,25 @@ interface LazyframeOptions {
 }
 
 // Fully resolved settings for an instance, merging defaults and data-attributes
-interface LazyframeSettings extends LazyframeOptions {
+type LazyframeSettings = LazyframeOptions & {
     initialized: boolean;
     originalSrc?: string;
     query?: string | null;
 }
 
 // The internal representation of a single lazyframe instance
-interface LazyframeInstance {
+type LazyframeInstance = {
     el: HTMLElement;
     settings: LazyframeSettings;
     iframe?: HTMLIFrameElement;
 }
 
-interface NoEmbedResponse {
+type NoEmbedResponse = {
     title: string;
     thumbnail_url: string;
 }
 
-interface VideoProvider {
+type VideoProvider = {
     regex: RegExp;
     condition: (match: RegExpMatchArray | null) => string | false;
     buildSrc: (settings: LazyframeSettings) => string;
