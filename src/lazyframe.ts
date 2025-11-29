@@ -68,9 +68,9 @@ const providers: Record<Vendor, VideoProvider> = {
 // --- Library Code ---
 
 const Lazyframe = () => {
-    let settings: LazyframeOptions;
+    let programmaticOptions: LazyframeOptions;
     const elements: Map<HTMLElement, LazyframeInstance> = new Map();
-    const defaults: LazyframeSettings = {
+    const DEFAULT_OPTIONS: Partial<LazyframeSettings> = {
         initialized: false,
         lazyload: true,
         autoplay: true,
@@ -96,7 +96,7 @@ const Lazyframe = () => {
     };
 
     function init(selector: string | HTMLElement | NodeListOf<HTMLElement>, userOptions: LazyframeOptions = {}): void {
-        settings = { ...defaults, ...userOptions };
+        programmaticOptions = { ...DEFAULT_OPTIONS , ...userOptions };
 
         const els = typeof selector === 'string' ? document.querySelectorAll<HTMLElement>(selector) : selector;
 
@@ -106,7 +106,7 @@ const Lazyframe = () => {
             els.forEach(loop);
         }
 
-        if (settings.lazyload) {
+        if (programmaticOptions.lazyload) {
             setObservers();
         }
     }
