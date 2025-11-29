@@ -114,17 +114,15 @@ const Lazyframe = () => {
     function loop(el: HTMLElement): void {
         if (!(el instanceof HTMLElement) || el.classList.contains('lazyframe--loaded')) return;
 
-        const instance: LazyframeInstance = {
-            el: el,
-            settings: setup(el),
-        };
-
         // There's cases where the `lazyload` library is loaded in two
         // different scripts, so we set a flag to know if an iframe
         // was already handled by lazyload previously
         if (instance.el.dataset.lazyloadReady === '1') return;
 
-        instance.el.dataset.lazyloadReady = '1';
+        const instance: LazyframeInstance = {
+            el,
+            settings: setup(el),
+        };
 
         instance.el.addEventListener('click', () => {
             if (instance.iframe) {
@@ -145,6 +143,9 @@ const Lazyframe = () => {
         } else {
             api(instance);
         }
+
+        // Assign this at the end to avoid polution during the setup.
+        el.dataset.lazyloadReady = '1';
     }
 
     function setup(el: HTMLElement): LazyframeSettings {
