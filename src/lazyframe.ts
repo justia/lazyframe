@@ -71,7 +71,6 @@ const Lazyframe = () => {
     let programmaticOptions: LazyframeOptions;
     const elements: Map<HTMLElement, LazyframeInstance> = new Map();
     const DEFAULT_OPTIONS: Partial<LazyframeSettings> = {
-        initialized: false,
         lazyload: true,
         autoplay: true,
         loadThumbnail: true,
