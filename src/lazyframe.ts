@@ -42,25 +42,25 @@ type NoEmbedResponse = {
 
 type VideoProvider = {
     regex: RegExp;
-    condition: (match: RegExpMatchArray | null) => string | false;
+    condition: (match: RegExpMatchArray | null) => string | undefined;
     buildSrc: (settings: LazyframeSettings) => string;
 }
 
 const providers: Record<Vendor, VideoProvider> = {
     youtube: {
         regex: /(?:youtube\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\?(?:\S*?&?v\=))|youtu\.be\/)([a-zA-Z0-9_-]{6,11})/,
-        condition: (m) => (m && m[1].length === 11 ? m[1] : false),
+        condition: (m) => (m && m[1].length === 11 ? m[1] : undefined),
         buildSrc: (s) => `https://www.youtube.com/embed/${s.id}/?autoplay=${s.autoplay ? '1' : '0'}&${s.query || ''}`,
     },
     youtube_nocookie: {
         regex: /(?:youtube-nocookie\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\?(?:\S*?&?v\=)))([a-zA-Z0-9_-]{6,11})/,
-        condition: (m) => (m && m[1].length === 11 ? m[1] : false),
+        condition: (m) => (m && m[1].length === 11 ? m[1] : undefined),
         buildSrc: (s) =>
             `https://www.youtube-nocookie.com/embed/${s.id}/?autoplay=${s.autoplay ? '1' : '0'}&${s.query || ''}`,
     },
     vimeo: {
         regex: /vimeo\.com\/(?:video\/)?([0-9]*)(?:\?|)/,
-        condition: (m) => (m && m[1].length > 0 ? m[1] : false),
+        condition: (m) => (m && m[1].length > 0 ? m[1] : undefined),
         buildSrc: (s) => `https://player.vimeo.com/video/${s.id}/?autoplay=${s.autoplay ? '1' : '0'}&${s.query || ''}`,
     },
 };
@@ -181,11 +181,7 @@ const Lazyframe = () => {
             const provider = providers[options.vendor];
 
             const match = options.src.match(provider.regex);
-            const id = provider.condition(match);
-
-            if (id) {
-                options.id = id;
-            }
+            options.id = provider.condition(match);
         }
 
         return options;
