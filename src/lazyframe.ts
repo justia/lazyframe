@@ -180,13 +180,11 @@ const Lazyframe = () => {
         if (options.vendor) {
             const provider = providers[options.vendor];
 
-            if (provider) {
-                const match = options.src.match(provider.regex);
-                const id = provider.condition(match);
+            const match = options.src.match(provider.regex);
+            const id = provider.condition(match);
 
-                if (id) {
-                    options.id = id;
-                }
+            if (id) {
+                options.id = id;
             }
         }
 
