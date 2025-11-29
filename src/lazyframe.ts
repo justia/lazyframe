@@ -193,19 +193,52 @@ const Lazyframe = () => {
     }
 
     function setup(el: HTMLLazyframeElement): LazyframeSettings {
-        const data = { ...el.dataset };
+        const {
+            // Extract other useful variables
+            src,
+            vendor: dataVendor,
 
-        if (!data.src) {
+            // Capture the rest (vendor, title, thumbnail, ratio, etc.)
+            ...restDataAttrs
+        } = el.dataset;
+
+        // Safety check for src
+        if (!src) {
             throw new Error(`Lazyframe: The 'data-src' attribute must exist. Please make sure it is defined: ${el}`);
+        }
+
+        let vendor = dataVendor;
+        let id: LazyframeSettings['id'];
+
+
+        if (src.includes('youtube-nocookie')) {
+            vendor = 'youtube_nocookie';
+        }
+
+        if (vendor) {
+            const provider = providers[vendor];
+
+            const match = src.match(provider.regex);
+            id = provider.condition(match);
         }
 
         // Merge defaults, user settings, and data attributes in order of precedence
         const initialOptions: LazyframeSettings = {
-            ...programmaticOptions, // Global settings
-            ...data, // Data attributes (will overwrite global settings if present)
+            // First spread programmating options. Specifically `onLoad`, `onAppend` and `onThumbnailLoad`.
+            ...programmaticOptions,
+
+            // Spread the remaining data attributes defined on each element.
+            ...restDataAttrs,
+
+            // Set props that could only be obtained through `data-*` attributes.
+            src,
+            vendor,
+            id,
+
+            // Set extra info.
             initialized: false, // Always start as not initialized
-            originalSrc: data.src,
-            query: getQuery(data.src),
+            originalSrc: src,
+            query: getQuery(src),
         };
 
         // Explicitly parse boolean attributes, ensuring they take final precedence
@@ -217,16 +250,6 @@ const Lazyframe = () => {
             loadThumbnail: parseBoolean(data.loadThumbnail, initialOptions.loadThumbnail),
             showPlayButton: parseBoolean(data.showPlayButton, initialOptions.showPlayButton),
         };
-
-        if (options.src.includes('youtube-nocookie')) {
-            options.vendor = 'youtube_nocookie';
-        }
-        if (options.vendor) {
-            const provider = providers[options.vendor];
-
-            const match = options.src.match(provider.regex);
-            options.id = provider.condition(match);
-        }
 
         return options;
     }
