@@ -194,6 +194,13 @@ const Lazyframe = () => {
 
     function setup(el: HTMLLazyframeElement): LazyframeSettings {
         const {
+            // Extract known Boolean keys
+            lazyload,
+            autoplay,
+            initinview,
+            loadThumbnail,
+            showPlayButton,
+
             // Extract other useful variables
             src,
             vendor: dataVendor,
@@ -223,7 +230,7 @@ const Lazyframe = () => {
         }
 
         // Merge defaults, user settings, and data attributes in order of precedence
-        const initialOptions: LazyframeSettings = {
+        const options: LazyframeSettings = {
             // First spread programmating options. Specifically `onLoad`, `onAppend` and `onThumbnailLoad`.
             ...programmaticOptions,
 
@@ -239,16 +246,12 @@ const Lazyframe = () => {
             initialized: false, // Always start as not initialized
             originalSrc: src,
             query: getQuery(src),
-        };
-
-        // Explicitly parse boolean attributes, ensuring they take final precedence
-        const options: LazyframeSettings = {
-            ...initialOptions,
-            lazyload: parseBoolean(data.lazyload, initialOptions.lazyload),
-            autoplay: parseBoolean(data.autoplay, initialOptions.autoplay),
-            initinview: parseBoolean(data.initinview, initialOptions.initinview),
-            loadThumbnail: parseBoolean(data.loadThumbnail, initialOptions.loadThumbnail),
-            showPlayButton: parseBoolean(data.showPlayButton, initialOptions.showPlayButton),
+            // Parse booleans with defaults and override programmatic options if `data-*` attributes were defined.
+            lazyload: parseBoolean(lazyload, programmaticOptions.lazyload),
+            autoplay: parseBoolean(autoplay, programmaticOptions.autoplay),
+            initinview: parseBoolean(initinview, programmaticOptions.initinview),
+            loadThumbnail: parseBoolean(loadThumbnail, programmaticOptions.loadThumbnail),
+            showPlayButton: parseBoolean(showPlayButton, programmaticOptions.showPlayButton),
         };
 
         return options;
