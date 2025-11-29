@@ -140,7 +140,7 @@ const Lazyframe = () => {
             }
         });
 
-        if (settings.lazyload) {
+        if (instance.settings.lazyload) {
             build(instance);
         } else {
             api(instance);
@@ -308,7 +308,7 @@ const Lazyframe = () => {
             instance.el.appendChild(setPlayBtn());
         }
 
-        if (!settings.lazyload) {
+        if (!instance.settings.lazyload) {
             instance.el.classList.add('lazyframe--loaded');
             if (instance.settings.onLoad) {
                 instance.settings.onLoad(instance);
