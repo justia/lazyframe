@@ -201,7 +201,7 @@ const Lazyframe = () => {
 
         // Merge defaults, user settings, and data attributes in order of precedence
         const initialOptions: LazyframeSettings = {
-            ...settings, // Global settings
+            ...programmaticOptions, // Global settings
             ...data, // Data attributes (will overwrite global settings if present)
             initialized: false, // Always start as not initialized
             originalSrc: data.src,
