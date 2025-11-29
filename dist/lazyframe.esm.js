@@ -78,7 +78,7 @@ const Lazyframe = () => {
                 instance.settings.onAppend(iframe);
             }
         });
-        if (settings.lazyload) {
+        if (instance.settings.lazyload) {
             build(instance);
         }
         else {
@@ -228,7 +228,7 @@ const Lazyframe = () => {
             titleNode.textContent = instance.settings.title;
             instance.el.appendChild(titleNode);
         }
-        if (!settings.lazyload) {
+        if (!instance.settings.lazyload) {
             instance.el.classList.add('lazyframe--loaded');
             if (instance.settings.onLoad) {
                 instance.settings.onLoad(instance);
