@@ -239,7 +239,7 @@ const Lazyframe = () => {
         }
     }
 
-    function setPlayBtn(btnTxt: string = 'Play'): HTMLButtonElement {
+    function setPlayBtn(btnTxt = 'Play'): HTMLButtonElement {
         const playButton = document.createElement('button');
         playButton.type = 'button';
         playButton.classList.add('lf-play-btn');
