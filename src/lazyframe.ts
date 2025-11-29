@@ -3,14 +3,13 @@ import './scss/lazyframe.scss';
 // --- Type Definitions ---
 
 type Vendor = 'youtube' | 'youtube_nocookie' | 'vimeo';
+type AspectRatio = '16:9' | '4:3' | '1:1';
+type StringBoolean = 'true' | 'false';
+// Helper to verify if a value is strictly 'true' | 'false'.
+type ConvertStringBool<T> = T extends StringBoolean ? boolean : T;
 
-// Options the user can pass during initialization
+// Options the user can set during a programmatic initialization.
 type LazyframeOptions = {
-    vendor?: Vendor;
-    id?: string;
-    src?: string;
-    thumbnail?: string;
-    title?: string;
     lazyload?: boolean;
     autoplay?: boolean;
     initinview?: boolean;
@@ -21,16 +20,43 @@ type LazyframeOptions = {
     onThumbnailLoad?: (imgUrl: string) => void;
 }
 
-// Fully resolved settings for an instance, merging defaults and data-attributes
-type LazyframeSettings = LazyframeOptions & {
+// Defines all the possible `data-*` attributes that the element could have.
+type LazyframeDatasetStringOptions = {
+    src: string;
+    vendor?: Vendor;
+    title?: string;
+    thumbnail?: string;
+    ratio?: AspectRatio;
+    lazyload?: StringBoolean;
+    autoplay?: StringBoolean;
+    initinview?: StringBoolean;
+    loadThumbnail?: StringBoolean;
+    showPlayButton?: StringBoolean;
+};
+
+// 2. The Transformation Type
+type LazyframeDatasetOptions = {
+    // Iterate over every key EXCEPT 'lazyloadReady'
+    [K in keyof Omit<LazyframeDatasetStringOptions, 'lazyloadReady'>]:
+        // Apply the conversion helper to the value
+        ConvertStringBool<LazyframeDatasetStringOptions[K]>
+};
+
+interface HTMLLazyframeElement extends HTMLElement {
+    dataset: LazyframeDatasetStringOptions;
+}
+
+// Fully resolved settings for an instance, merging defaults, user settings, data-attributes and extra values defined during execution.
+type LazyframeSettings = LazyframeOptions & LazyframeDatasetOptions & {
     initialized: boolean;
     originalSrc: string;
+    id?: string;
     query?: string;
 };
 
 // The internal representation of a single lazyframe instance
 type LazyframeInstance = {
-    el: HTMLElement;
+    el: HTMLLazyframeElement;
     settings: LazyframeSettings;
     iframe?: HTMLIFrameElement;
 }
@@ -69,7 +95,7 @@ const providers: Record<Vendor, VideoProvider> = {
 
 const Lazyframe = () => {
     let programmaticOptions: LazyframeOptions;
-    const elements: Map<HTMLElement, LazyframeInstance> = new Map();
+    const elements: Map<HTMLLazyframeElement, LazyframeInstance> = new Map();
     const DEFAULT_OPTIONS: Partial<LazyframeSettings> = {
         lazyload: true,
         autoplay: true,
@@ -94,10 +120,10 @@ const Lazyframe = () => {
         },
     };
 
-    function init(selector: string | HTMLElement | NodeListOf<HTMLElement>, userOptions: LazyframeOptions = {}): void {
+    function init(selector: string | HTMLLazyframeElement | NodeListOf<HTMLLazyframeElement>, userOptions: LazyframeOptions = {}): void {
         programmaticOptions = { ...DEFAULT_OPTIONS , ...userOptions };
 
-        const els = typeof selector === 'string' ? document.querySelectorAll<HTMLElement>(selector) : selector;
+        const els = typeof selector === 'string' ? document.querySelectorAll<HTMLLazyframeElement>(selector) : selector;
 
         if (els instanceof HTMLElement) {
             loop(els);
@@ -127,7 +153,7 @@ const Lazyframe = () => {
         }
     }
 
-    function loop(el: HTMLElement): void {
+    function loop(el: HTMLLazyframeElement): void {
         if (!(el instanceof HTMLElement) || el.classList.contains('lazyframe--loaded')) return;
 
         // There's cases where the `lazyload` library is loaded in two
@@ -164,7 +190,7 @@ const Lazyframe = () => {
         el.dataset.lazyloadReady = '1';
     }
 
-    function setup(el: HTMLElement): LazyframeSettings {
+    function setup(el: HTMLLazyframeElement): LazyframeSettings {
         const data = { ...el.dataset };
 
         if (!data.src) {
@@ -281,11 +307,11 @@ const Lazyframe = () => {
         const lazyframeObserver = new IntersectionObserver((entries) => {
             entries.forEach((entry) => {
                 if (entry.isIntersecting) {
-                    const instance = elements.get(entry.target as HTMLElement);
+                    const instance = elements.get(entry.target as HTMLLazyframeElement);
                     if (instance) {
                         initElement(instance);
                         lazyframeObserver.unobserve(entry.target);
-                        elements.delete(entry.target as HTMLElement);
+                        elements.delete(entry.target as HTMLLazyframeElement);
                     }
                 }
             });
