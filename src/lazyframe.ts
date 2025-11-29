@@ -253,9 +253,7 @@ const Lazyframe = () => {
 
             instance.settings.initialized = true;
             instance.el.classList.add('lazyframe--loaded');
-            if (instance.settings.showPlayButton) {
-                instance.el.appendChild(setPlayBtn());
-            }
+
             api(instance);
 
             if (instance.settings.initinview) {
@@ -304,6 +302,10 @@ const Lazyframe = () => {
             titleNode.className = 'lazyframe__title';
             titleNode.textContent = instance.settings.title;
             instance.el.appendChild(titleNode);
+        }
+
+        if (instance.settings.showPlayButton) {
+            instance.el.appendChild(setPlayBtn());
         }
 
         if (!settings.lazyload) {
