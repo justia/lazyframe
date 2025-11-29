@@ -95,7 +95,7 @@ const Lazyframe = () => {
         },
     };
 
-    function init(selector: string | HTMLElement | NodeListOf<HTMLElement>, userOptions?: LazyframeOptions): void {
+    function init(selector: string | HTMLElement | NodeListOf<HTMLElement>, userOptions: LazyframeOptions = {}): void {
         settings = { ...defaults, ...userOptions };
 
         const els = typeof selector === 'string' ? document.querySelectorAll<HTMLElement>(selector) : selector;
