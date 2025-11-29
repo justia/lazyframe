@@ -267,26 +267,22 @@ const Lazyframe = () => {
             }
         };
 
-        if ('IntersectionObserver' in window) {
-            const lazyframeObserver = new IntersectionObserver((entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        const instance = elements.get(entry.target as HTMLElement);
-                        if (instance) {
-                            initElement(instance);
-                            lazyframeObserver.unobserve(entry.target);
-                            elements.delete(entry.target as HTMLElement);
-                        }
+        const lazyframeObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    const instance = elements.get(entry.target as HTMLElement);
+                    if (instance) {
+                        initElement(instance);
+                        lazyframeObserver.unobserve(entry.target);
+                        elements.delete(entry.target as HTMLElement);
                     }
-                });
+                }
             });
+        });
 
-            elements.forEach((instance) => {
-                lazyframeObserver.observe(instance.el);
-            });
-        } else {
-            elements.forEach(initElement);
-        }
+        elements.forEach((instance) => {
+            lazyframeObserver.observe(instance.el);
+        });
     }
 
     function build(instance: LazyframeInstance, loadImage?: boolean): void {
