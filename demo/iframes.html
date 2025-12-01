@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Lazyframe Demo - Iframes</title>
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <link rel="stylesheet" href="/dist/lazyframe.css" />
+        <link rel="stylesheet" href="assets/demo.css" />
+    </head>
+    <body>
+        <h1><a href="index.html">@justia/lazyframe</a></h1>
+
+        <div class="content">
+            <h2>Iframes</h2>
+        </div>
+
+        <div class="samples">
+            <div class="sample">
+                <p>Iframe with custom theme and title</p>
+                <div class="lazyframe lazyframe--custom" data-src="https://www.surveymonkey.com/r/?sm=%2bd%2bdWobuoz7irMV%2fpzKPcJmrKosuGWSraJtIrFQ4wBQ%3d" data-title="Click to load"></div>
+            </div>
+
+            <div class="sample">
+                <p>Google maps iframe with custom thumbnail and title that gets executed when in view</p>
+                <div
+                    class="lazyframe lazyframe--custom"
+                    data-src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d338.39606511410227!2d-100.98236914799563!3d25.45548098768475!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x86886d5a969c813d%3A0xbcf88865224ad3d3!2sJustia%20M%C3%A9xico!5e0!3m2!1sen!2smx!4v1764277131614!5m2!1sen!2smx"
+                    data-title="You may not see this"
+                    data-initinview="true"
+                ></div>
+            </div>
+        </div>
+
+        <script src="/dist/lazyframe.min.js"></script>
+        <script>
+            lazyframe('.lazyframe');
+        </script>
+    </body>
+</html>

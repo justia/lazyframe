@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Lazyframe Demo - Thumbnail Loading</title>
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <link rel="stylesheet" href="/dist/lazyframe.css" />
+        <link rel="stylesheet" href="assets/demo.css" />
+    </head>
+    <body>
+        <h1><a href="index.html">@justia/lazyframe</a></h1>
+
+        <div class="content">
+            <h2><code>data-load-thumbnail</code></h2>
+        </div>
+
+        <hr />
+
+        <div class="content">
+            <h3>
+                <code>data-load-thumbnail="true"</code>
+                (Default)
+            </h3>
+            <p class="text-center">
+                See example of this variant
+                <a href="vendors.html">here</a>
+                .
+            </p>
+        </div>
+
+        <hr />
+
+        <div class="content">
+            <h3><code>data-load-thumbnail="false"</code></h3>
+            <p class="text-center">Prevents the loading of the video thumbnail through the API.</p>
+        </div>
+
+        <div class="samples">
+            <div class="sample">
+                <p><strong>YouTube</strong></p>
+                <div class="lazyframe" data-src="https://www.youtube.com/embed/ara1uUvajoU" data-vendor="youtube" data-load-thumbnail="false"></div>
+            </div>
+            <div class="sample">
+                <p><strong>YouTube (nocookie)</strong></p>
+                <div class="lazyframe" data-src="https://www.youtube-nocookie.com/embed/EO9inlOjZGg?rel=0" data-vendor="youtube_nocookie" data-load-thumbnail="false"></div>
+            </div>
+            <div class="sample">
+                <p><strong>Vimeo</strong></p>
+                <div class="lazyframe" data-src="https://vimeo.com/111049676" data-vendor="vimeo" data-load-thumbnail="false"></div>
+            </div>
+        </div>
+
+        <div class="content">
+            <p class="text-center">
+                It also prevents the thumbnail loading even if the
+                <a href="thumbnail.html">
+                    <code>data-thumbnail</code>
+                    attribute
+                </a>
+                is set.
+            </p>
+        </div>
+
+        <div class="samples">
+            <div class="sample">
+                <p><strong>YouTube</strong></p>
+                <div
+                    class="lazyframe"
+                    data-src="https://www.youtube.com/embed/ara1uUvajoU"
+                    data-vendor="youtube"
+                    data-thumbnail="https://picsum.photos/id/55/500/281"
+                    data-load-thumbnail="false"
+                ></div>
+            </div>
+            <div class="sample">
+                <p><strong>YouTube (nocookie)</strong></p>
+                <div
+                    class="lazyframe"
+                    data-src="https://www.youtube-nocookie.com/embed/EO9inlOjZGg?rel=0"
+                    data-vendor="youtube_nocookie"
+                    data-thumbnail="https://picsum.photos/id/69/500/281"
+                    data-load-thumbnail="false"
+                ></div>
+            </div>
+            <div class="sample">
+                <p><strong>Vimeo</strong></p>
+                <div class="lazyframe" data-src="https://vimeo.com/111049676" data-vendor="vimeo" data-thumbnail="https://picsum.photos/id/56/500/281" data-load-thumbnail="false"></div>
+            </div>
+        </div>
+
+        <script src="/dist/lazyframe.min.js"></script>
+        <script>
+            lazyframe('.lazyframe');
+        </script>
+    </body>
+</html>

@@ -12,7 +12,9 @@
     "declarationMap": false,
     "pretty": true,
     "sourceMap": false,
-    "outDir": "dist",
+    "outDir": "dist"
   },
-  "include": ["src/**/*"]
+  "include": [
+    "src/**/*"
+  ]
 }

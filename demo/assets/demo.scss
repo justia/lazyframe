@@ -1,0 +1,155 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 1rem 1rem 4rem;
+    font-size: 18px;
+    line-height: 1.5;
+    font-family:
+        system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol';
+}
+
+code {
+    font-size: 0.875em;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+    color: #008531;
+    border: 1px solid #e0e1e6;
+    border-radius: 0.375em;
+    padding: 0.125em 0.375em;
+    background-color: #fff;
+}
+
+h1 {
+    display: block;
+    width: fit-content;
+    margin: 0.67em auto 2em;
+    font-size: clamp(3rem, 5vw, 4rem);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+}
+
+h2 {
+    width: 100%;
+    font-size: clamp(2.2rem, 3.5vw, 2.8rem);
+    margin: 0 0 0.75em;
+    text-align: center;
+}
+
+h3 {
+    font-size: 1.6rem;
+    margin: 0 0 0.9em;
+    text-align: center;
+}
+
+p {
+    margin: 0 0 1em;
+
+    &:last-child {
+        margin: 0;
+    }
+}
+
+a {
+    color: #0a56c6;
+    text-decoration: none;
+
+    &:hover {
+        color: #e2231a;
+        text-decoration: underline;
+    }
+
+    * {
+        color: currentColor;
+    }
+}
+
+hr {
+    width: 90%;
+    border: solid #d4d4d4;
+    border-width: 1px 0 0;
+    margin: 5rem auto;
+}
+
+blockquote {
+    padding: 0.5rem 1rem;
+    margin: 2.8rem auto;
+    border-left: 0.25em solid #818b98;
+    background-color: #818b981a;
+    width: fit-content;
+    font-style: italic;
+
+    &.error {
+        border-color: #e2231a;
+        background-color: #fce9e8;
+        font-style: normal;
+        font-weight: bold;
+        color: #7c130e;
+    }
+}
+
+.content {
+    width: min(100%, 40rem);
+    margin: 0 auto 5rem;
+
+    *:last-child {
+        margin-bottom: 0;
+    }
+}
+
+.text-center {
+    text-wrap: balance;
+    text-align: center;
+}
+
+.samples {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: start;
+    gap: 2rem;
+
+    + .samples {
+        margin-top: 2rem;
+    }
+
+    + .content {
+        margin-top: 5rem;
+    }
+}
+
+.sample {
+    width: min(100%, 500px);
+
+    p {
+        text-align: center;
+    }
+}
+
+.lazyframe--custom {
+    background-color: #bada55;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+
+    &::before {
+        width: auto;
+    }
+
+    .lazyframe__title {
+        position: relative;
+        width: 100%;
+        display: block;
+        font-size: 2rem;
+        font-family: Arial;
+        color: #fff;
+    }
+
+    .lf-play-btn {
+        display: none;
+    }
+}

@@ -1,8 +1,6 @@
 # Lazyframe
-[![Node.js Package](https://github.com/justia/lazyframe/actions/workflows/npm-publish.yml/badge.svg)](https://github.com/justia/lazyframe/actions/workflows/npm-publish.yml)
-[![npm version](https://badge.fury.io/js/lazyframe.svg)](https://badge.fury.io/js/lazyframe)
 
-Dependency-free library for lazyloading iframes. [Demo](https://vb.github.io/lazyframe/)
+Dependency-free library for lazyloading iframes. [Demo](https://vb.github.io/lazyframe/).
 
 ## Why?
 
@@ -26,13 +24,13 @@ Lazyframe comes with brand-like themes for Youtube and Vimeo.
 NPM
 
 ```bash
-$ npm install @justia/lazyframe --save
+npm install @justia/lazyframe --save
 ```
 
 Bower
 
 ```bash
-$ bower install lazyframe
+bower install lazyframe
 ```
 
 ### Import
@@ -40,7 +38,7 @@ $ bower install lazyframe
 JavaScript ES6 imports
 
 ```js
-import lazyframe from "@justia/lazyframe";
+import lazyframe from '@justia/lazyframe';
 ```
 
 Include JavaScript in html
@@ -61,14 +59,14 @@ The `lazyframe` function accepts a CSS selector, a single DOM element, or a coll
 
 ```js
 // Passing a selector string
-lazyframe(".lazyframe");
+lazyframe('.lazyframe');
 
 // Passing a NodeList
-const elements = document.querySelectorAll(".lazyframe");
+const elements = document.querySelectorAll('.lazyframe');
 lazyframe(elements);
 
 // Passing a single element
-const element = document.querySelector(".lazyframe");
+const element = document.querySelector('.lazyframe');
 lazyframe(element);
 ```
 
@@ -82,16 +80,16 @@ These options are passed as an object during initialization and apply to all ins
 
 ```js
 lazyframe(elements, {
-  lazyload: true,
-  autoplay: true,
-  initinview: false,
-  showPlayButton: true,
-  loadThumbnail: true,
+    lazyload: true,
+    autoplay: true,
+    initinview: false,
+    showPlayButton: true,
+    loadThumbnail: true,
 
-  // Callbacks
-  onLoad: (lazyframe) => console.log(lazyframe),
-  onAppend: (iframe) => console.log(iframe),
-  onThumbnailLoad: (img) => console.log(img),
+    // Callbacks
+    onLoad: (lazyframe) => console.log(lazyframe),
+    onAppend: (iframe) => console.log(iframe),
+    onThumbnailLoad: (img) => console.log(img),
 });
 ```
 
@@ -102,9 +100,9 @@ lazyframe(elements, {
 | `initinview` | `(boolean)` | `false` | If `true`, the iframe is immediately initialized (as if clicked) when the element enters the viewport. Requires `lazyload: true`. |
 | `showPlayButton` | `(boolean)` | `true` | If `false`, the play button graphic will not be added to the placeholder. |
 | `loadThumbnail` | `(boolean)` | `true` | If `false`, the fetched thumbnail image will not be applied as a background to the placeholder. |
-| `onLoad` | `(function)` | ` ` | Callback function fired when an element is initialized (i.e., enters the viewport or on page load if `lazyload` is `false`). Receives the lazyframe instance object. |
-| `onAppend` | `(function)` | ` ` | Callback function fired after the `iframe` is appended to the DOM upon user interaction. Receives the `iframe` element. |
-| `onThumbnailLoad` | `(function)` | ` ` | Callback function fired after a thumbnail URL is successfully fetched from the `noembed.com` API. Receives the image URL string. |
+| `onLoad` | `(function)` | - | Callback function fired when an element is initialized (i.e., enters the viewport or on page load if `lazyload` is `false`). Receives the lazyframe instance object. |
+| `onAppend` | `(function)` | - | Callback function fired after the `iframe` is appended to the DOM upon user interaction. Receives the `iframe` element. |
+| `onThumbnailLoad` | `(function)` | - | Callback function fired after a thumbnail URL is successfully fetched from the `noembed.com` API. Receives the image URL string. |
 
 ### Element-Specific Options (Data Attributes)
 
@@ -112,16 +110,16 @@ These options are set as `data-*` attributes directly on the HTML element.
 
 ```html
 <div
-  class="lazyframe"
-  data-src="https://www.youtube.com/embed/ara1uUvajoU"
-  data-vendor="youtube"
-  data-title="Custom Title"
-  data-thumbnail="https://example.com/custom-thumb.jpg"
-  data-ratio="16:9"
-  data-autoplay="false"
-  data-initinview="true"
-  data-show-play-button="false"
-  data-load-thumbnail="false"
+    class="lazyframe"
+    data-src="https://www.youtube.com/embed/ara1uUvajoU"
+    data-vendor="youtube"
+    data-title="Custom Title"
+    data-thumbnail="https://example.com/custom-thumb.jpg"
+    data-ratio="16:9"
+    data-autoplay="false"
+    data-initinview="true"
+    data-show-play-button="false"
+    data-load-thumbnail="false"
 ></div>
 ```
 
