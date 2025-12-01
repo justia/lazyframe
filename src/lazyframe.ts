@@ -60,7 +60,7 @@ type LazyframeSettings = LazyframeOptions & LazyframeDatasetOptions & {
 type LazyframeInstance = {
     el: HTMLLazyframeElement;
     settings: LazyframeSettings;
-    iframe?: HTMLIFrameElement;
+    iframe: HTMLIFrameElement;
 }
 
 type NoEmbedResponse = {
@@ -163,15 +163,15 @@ const Lazyframe = () => {
         // was already handled by lazyload previously
         if (el.dataset.lazyloadReady === 'true') return;
 
+        const settings = setup(el);
         const instance: LazyframeInstance = {
             el,
-            settings: setup(el),
+            iframe: getIframe(settings),
+            settings,
         };
 
         instance.el.addEventListener('click', () => {
-            if (instance.iframe) {
-                instance.el.appendChild(instance.iframe);
-            }
+            instance.el.appendChild(instance.iframe);
 
             instance.el.classList.add('lazyframe--activated');
 
@@ -368,8 +368,6 @@ const Lazyframe = () => {
     }
 
     function build(instance: LazyframeInstance, loadImage?: boolean): void {
-        instance.iframe = getIframe(instance.settings);
-
         if (instance.settings.thumbnail && loadImage && instance.settings.loadThumbnail) {
             const thumbnails = instance.settings.thumbnail.replace(/\s/g, '').split(',');
 
