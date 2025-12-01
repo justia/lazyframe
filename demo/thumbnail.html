@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Lazyframe Demo - Custom Thumbnail</title>
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <link rel="stylesheet" href="/dist/lazyframe.css" />
+        <link rel="stylesheet" href="assets/demo.css" />
+    </head>
+    <body>
+        <h1><a href="index.html">@justia/lazyframe</a></h1>
+
+        <div class="content">
+            <h2>
+                <code>data-thumbnail</code>
+            </h2>
+        </div>
+
+        <div class="samples">
+            <div class="sample">
+                <p><strong>YouTube</strong></p>
+                <div class="lazyframe" data-src="https://www.youtube.com/embed/ara1uUvajoU" data-vendor="youtube" data-thumbnail="https://picsum.photos/id/55/500/281"></div>
+            </div>
+            <div class="sample">
+                <p><strong>YouTube (nocookie)</strong></p>
+                <div class="lazyframe" data-src="https://www.youtube-nocookie.com/embed/EO9inlOjZGg?rel=0" data-vendor="youtube_nocookie" data-thumbnail="https://picsum.photos/id/69/500/281"></div>
+            </div>
+            <div class="sample">
+                <p><strong>Vimeo</strong></p>
+                <div class="lazyframe" data-src="https://vimeo.com/111049676" data-vendor="vimeo" data-thumbnail="https://picsum.photos/id/56/500/281"></div>
+            </div>
+        </div>
+
+        <script src="/dist/lazyframe.min.js"></script>
+        <script>
+            lazyframe('.lazyframe');
+        </script>
+    </body>
+</html>
