@@ -367,8 +367,8 @@ const Lazyframe = () => {
         });
     }
 
-    function build(instance: LazyframeInstance, loadImage?: boolean): void {
-        if (instance.settings.thumbnail && loadImage && instance.settings.loadThumbnail) {
+    function build(instance: LazyframeInstance, loadthumbnailOnInit = false): void {
+        if (loadthumbnailOnInit && instance.settings.thumbnail && instance.settings.loadThumbnail) {
             const thumbnails = instance.settings.thumbnail.replace(/\s/g, '').split(',');
 
             if (thumbnails.length > 1) {
