@@ -262,6 +262,23 @@ const Lazyframe = () => {
         return query[1] ? query[1] : undefined;
     }
 
+    /**
+     * Checks if missing data needs to be fetched from the API.
+     *
+     * The function returns `true` only if a valid Vendor exists, but
+     * the local data is incomplete (missing either a title or a thumbnail).
+     *
+     * Logic Matrix:
+     * - No Vendor                -> false
+     * - Vendor + Title + Thumb   -> false (Data complete)
+     * - Vendor + No Title        -> true
+     * - Vendor + No Thumb        -> true
+     *
+     * @param [vendor] - The target vendor.
+     * @param [dataTitle] - The current title (if any).
+     * @param [thumbnail] - The current thumbnail (if any).
+     * @returns `true` if the API needs to be called to backfill missing data.
+     */
     function useApi(settings: LazyframeSettings): boolean {
         if (!settings.vendor) return false;
         return !settings.title || !settings.thumbnail;
