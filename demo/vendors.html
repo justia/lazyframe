@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Lazyframe Demo - Vendors</title>
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <link rel="stylesheet" href="/dist/lazyframe.css" />
+        <link rel="stylesheet" href="assets/demo.css" />
+    </head>
+    <body>
+        <h1><a href="index.html">@justia/lazyframe</a></h1>
+
+        <div class="content">
+            <h2><code>data-vendor</code></h2>
+
+            <p class="text-center">
+                This is
+                <strong>required</strong>
+                , otherwise the element will be considered an
+                <a href="iframes.html">iframe</a>
+                .
+            </p>
+
+            <blockquote>
+                Title is fetched from the
+                <code>noembed.com</code>
+                API.
+            </blockquote>
+        </div>
+
+        <hr />
+
+        <div class="content">
+            <h3><code>data-vendor="youtube"</code></h3>
+        </div>
+
+        <div class="samples">
+            <div class="sample">
+                <p>
+                    <strong><code>youtube.com</code></strong>
+                </p>
+                <div class="lazyframe" data-src="https://www.youtube.com/embed/ara1uUvajoU" data-vendor="youtube"></div>
+            </div>
+            <div class="sample">
+                <p>
+                    <strong><code>youtube-nocookie.com</code></strong>
+                </p>
+                <div class="lazyframe" data-src="https://www.youtube-nocookie.com/embed/EO9inlOjZGg?rel=0" data-vendor="youtube"></div>
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="content">
+            <h3><code>data-vendor="youtube_nocookie"</code></h3>
+
+            <p class="text-center">
+                Set value to
+                <code>youtube_nocookie</code>
+                to stictly specify the video comes from
+                <code>youtube-nocookie.com</code>
+                .
+            </p>
+        </div>
+
+        <div class="samples">
+            <div class="sample">
+                <p>
+                    <strong><code>youtube-nocookie.com</code></strong>
+                </p>
+                <div class="lazyframe" data-src="https://www.youtube-nocookie.com/embed/EO9inlOjZGg?rel=0" data-vendor="youtube_nocookie"></div>
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="content">
+            <h3><code>data-vendor="vimeo"</code></h3>
+        </div>
+
+        <div class="samples">
+            <div class="sample">
+                <p>
+                    <strong><code>vimeo.com</code></strong>
+                </p>
+                <div class="lazyframe" data-src="https://vimeo.com/111049676" data-vendor="vimeo"></div>
+            </div>
+        </div>
+
+        <script src="/dist/lazyframe.min.js"></script>
+        <script>
+            lazyframe('.lazyframe');
+        </script>
+        <script>
+            lazyframe('.lazyframe');
+        </script>
+    </body>
+</html>

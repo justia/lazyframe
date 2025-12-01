@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Lazyframe Demo - Autoplay</title>
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <link rel="stylesheet" href="/dist/lazyframe.css" />
+        <link rel="stylesheet" href="assets/demo.css" />
+    </head>
+    <body>
+        <h1><a href="index.html">@justia/lazyframe</a></h1>
+
+        <div class="content">
+            <h2><code>data-autoplay</code></h2>
+        </div>
+
+        <hr />
+
+        <div class="content">
+            <h3>
+                <code>data-autoplay="true"</code>
+                (Default)
+            </h3>
+
+            <p class="text-center">
+                See example of this variant
+                <a href="vendors.html">here</a>
+                .
+            </p>
+        </div>
+
+        <hr />
+
+        <div class="content">
+            <h3>
+                <code>data-autoplay="false"</code>
+            </h3>
+
+            <p class="text-center">This prevents the video autoplay after the user clicks the thumbnail.</p>
+        </div>
+
+        <div class="samples">
+            <div class="sample">
+                <p><strong>YouTube</strong></p>
+                <div class="lazyframe" data-src="https://www.youtube.com/embed/ara1uUvajoU" data-vendor="youtube" data-autoplay="false"></div>
+            </div>
+            <div class="sample">
+                <p><strong>YouTube (nocookie)</strong></p>
+                <div class="lazyframe" data-src="https://www.youtube-nocookie.com/embed/EO9inlOjZGg?rel=0" data-vendor="youtube_nocookie" data-autoplay="false"></div>
+            </div>
+            <div class="sample">
+                <p><strong>Vimeo</strong></p>
+                <div class="lazyframe" data-src="https://vimeo.com/111049676" data-vendor="vimeo" data-autoplay="false"></div>
+            </div>
+        </div>
+
+        <script src="/dist/lazyframe.min.js"></script>
+        <script>
+            lazyframe('.lazyframe');
+        </script>
+    </body>
+</html>
