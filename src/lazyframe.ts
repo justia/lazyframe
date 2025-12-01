@@ -49,9 +49,11 @@ interface HTMLLazyframeElement extends HTMLElement {
 }
 
 // Fully resolved settings for an instance, merging defaults, user settings, data-attributes and extra values defined during execution.
-type LazyframeSettings = LazyframeOptions & LazyframeDatasetOptions & {
+// `thumbnail` ommited because internally the value is transformed into an array of strings to set the inline background.
+type LazyframeSettings = LazyframeOptions & Omit<LazyframeDatasetOptions, 'thumbnail'> & {
     initialized: boolean;
     originalSrc: string;
+    thumbnails: string[];
     id?: string;
     query?: string;
 };
@@ -198,12 +200,13 @@ const Lazyframe = () => {
             lazyload,
             autoplay,
             initinview,
-            loadThumbnail,
+            loadThumbnail: dataLoadThumbnail,
             showPlayButton,
 
             // Extract other useful variables
             src,
             vendor: dataVendor,
+            thumbnail: dataThumbnail,
 
             // Capture the rest (vendor, title, thumbnail, ratio, etc.)
             ...restDataAttrs
@@ -216,7 +219,8 @@ const Lazyframe = () => {
 
         let vendor = dataVendor;
         let id: LazyframeSettings['id'];
-
+        const loadThumbnail = parseBoolean(dataLoadThumbnail, programmaticOptions.loadThumbnail);
+        const thumbnails = loadThumbnail && dataLoadThumbnail ? getBackgrounds(dataLoadThumbnail) : [];
 
         if (src.includes('youtube-nocookie')) {
             vendor = 'youtube_nocookie';
@@ -241,6 +245,7 @@ const Lazyframe = () => {
             src,
             vendor,
             id,
+            thumbnails,
 
             // Set extra info.
             initialized: false, // Always start as not initialized
@@ -250,7 +255,7 @@ const Lazyframe = () => {
             lazyload: parseBoolean(lazyload, programmaticOptions.lazyload),
             autoplay: parseBoolean(autoplay, programmaticOptions.autoplay),
             initinview: parseBoolean(initinview, programmaticOptions.initinview),
-            loadThumbnail: parseBoolean(loadThumbnail, programmaticOptions.loadThumbnail),
+            loadThumbnail,
             showPlayButton: parseBoolean(showPlayButton, programmaticOptions.showPlayButton),
         };
 
@@ -307,11 +312,11 @@ const Lazyframe = () => {
             if (!instance.settings.title) {
                 instance.settings.title = data.title;
             }
-            if (!instance.settings.thumbnail) {
-                const url = data.thumbnail_url;
-                instance.settings.thumbnail = url;
+            if (!instance.settings.thumbnails.length && instance.settings.loadThumbnail) {
+                instance.settings.thumbnails = getBackgrounds(data.thumbnail_url);
+
                 if (instance.settings.onThumbnailLoad) {
-                    instance.settings.onThumbnailLoad(url);
+                    instance.settings.onThumbnailLoad(data.thumbnail_url);
                 }
             }
 
@@ -368,15 +373,9 @@ const Lazyframe = () => {
     }
 
     function build(instance: LazyframeInstance, loadthumbnailOnInit = false): void {
-        if (loadthumbnailOnInit && instance.settings.thumbnail && instance.settings.loadThumbnail) {
-            const thumbnails = instance.settings.thumbnail.replace(/\s/g, '').split(',');
-
-            if (thumbnails.length > 1) {
-                const imageSet = `url('${thumbnails[0]}') 1x, url('${thumbnails[1]}') 1x`;
-                instance.el.style.backgroundImage = `-webkit-image-set(${imageSet})`;
-            } else {
-                instance.el.style.backgroundImage = `url('${thumbnails[0]}')`;
-            }
+        if (loadthumbnailOnInit && instance.settings.thumbnails.length) {
+            console.log(`[build] [${instance.el.id}] call setBackground`);
+            setBackground(instance.el, instance.settings.thumbnails);
         }
 
         if (instance.settings.title && !instance.el.querySelector('.lazyframe__title')) {
@@ -420,6 +419,16 @@ const Lazyframe = () => {
         }
 
         return iframeNode;
+    }
+
+    function getBackgrounds(thumbnail: string): string[] {
+        return thumbnail.replace(/\s/g, '').split(',');
+    }
+
+    function setBackground(el: HTMLElement, [img1, img2]: string[]) {
+        el.style.backgroundImage = img2
+            ? `-webkit-image-set(url('${img1}') 1x, url('${img2}') 1x)`
+            : `url('${img1}')`;
     }
 
     return init;
