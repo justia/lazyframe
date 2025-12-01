@@ -307,16 +307,16 @@ const Lazyframe = () => {
             if (!response.ok) {
                 throw new Error(`API request failed with status ${response.status}`);
             }
-            const data: NoEmbedResponse = await response.json();
+            const { title, thumbnail_url }: NoEmbedResponse = await response.json();
 
             if (!instance.settings.title) {
-                instance.settings.title = data.title;
+                instance.settings.title = title;
             }
             if (!instance.settings.thumbnails.length && instance.settings.loadThumbnail) {
-                instance.settings.thumbnails = getBackgrounds(data.thumbnail_url);
+                instance.settings.thumbnails = getBackgrounds(thumbnail_url);
 
                 if (instance.settings.onThumbnailLoad) {
-                    instance.settings.onThumbnailLoad(data.thumbnail_url);
+                    instance.settings.onThumbnailLoad(thumbnail_url);
                 }
             }
 
