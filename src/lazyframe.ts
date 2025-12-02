@@ -328,12 +328,12 @@ const Lazyframe = () => {
     }
 
     function setObservers(): void {
-        const initElement = (instance: LazyframeInstance) => {
+        const initElement = async (instance: LazyframeInstance) => {
             if (instance.settings.initialized) return;
 
             instance.settings.initialized = true;
 
-            api(instance);
+            await api(instance);
 
             if (instance.settings.initinview) {
                 instance.el.click();
