@@ -155,30 +155,30 @@ const Lazyframe = () => {
             settings,
         };
 
-        instance.el.addEventListener('click', () => {
-            instance.el.appendChild(instance.iframe);
+        el.addEventListener('click', () => {
+            el.appendChild(instance.iframe);
 
-            instance.el.classList.add('lazyframe--activated');
+            el.classList.add('lazyframe--activated');
 
             const iframe = el.querySelector<HTMLIFrameElement>('iframe');
 
-            if (iframe && instance.settings.onAppend) {
-                instance.settings.onAppend(iframe);
+            if (iframe && settings.onAppend) {
+                settings.onAppend(iframe);
             }
         });
 
-        if (!instance.settings.lazyload) {
+        if (!settings.lazyload) {
             api(instance);
         }
 
-        if (!elements.has(instance.el)) {
+        if (!elements.has(el)) {
             // Subscribe to observer regardless if the element was force to load with `data-lazyload="false"` or not.
-            elements.set(instance.el, instance);
+            elements.set(el, instance);
         }
 
         // Assign this at the end to avoid polution during the setup.
         el.dataset.lazyloadReady = 'true';
-        instance.el.classList.add('lazyframe--loaded');
+        el.classList.add('lazyframe--loaded');
     }
 
     function setup(el: HTMLLazyframeElement): LazyframeSettings {
