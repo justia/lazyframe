@@ -268,11 +268,11 @@ const Lazyframe = () => {
     }
     // TODO: Extract to another module.
     function getIframe(settings) {
-        const { vendor, id, autoplay } = settings;
+        const { src, id, autoplay } = settings;
         const iframeNode = document.createElement('iframe');
         if (id)
             iframeNode.id = `lazyframe-${id}`;
-        iframeNode.src = settings.src;
+        iframeNode.src = src;
         iframeNode.frameBorder = '0';
         iframeNode.allowFullscreen = true;
         if (autoplay) {
