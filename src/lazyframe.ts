@@ -149,20 +149,16 @@ const Lazyframe = () => {
         if (el.dataset.lazyloadReady === 'true') return;
 
         const settings = setup(el);
-        const instance: LazyframeInstance = {
-            el,
-            iframe: getIframe(settings),
-            settings,
-        };
+        const iframe = getIframe(settings);
+
+        const instance: LazyframeInstance = { el, settings, iframe };
 
         el.addEventListener('click', () => {
-            el.appendChild(instance.iframe);
+            el.appendChild(iframe);
 
             el.classList.add('lazyframe--activated');
 
-            const iframe = el.querySelector<HTMLIFrameElement>('iframe');
-
-            if (iframe && settings.onAppend) {
+            if (settings.onAppend) {
                 settings.onAppend(iframe);
             }
         });
