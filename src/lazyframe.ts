@@ -52,6 +52,7 @@ interface HTMLLazyframeElement extends HTMLElement {
 // `thumbnail` ommited because internally the value is transformed into an array of strings to set the inline background.
 type LazyframeSettings = LazyframeOptions & Omit<LazyframeDatasetOptions, 'thumbnail'> & {
     initialized: boolean;
+    built: boolean;
     originalSrc: string;
     useApi: boolean;
     thumbnails: string[];
@@ -235,6 +236,7 @@ const Lazyframe = () => {
 
             // Set extra info.
             initialized: false, // Always start as not initialized
+            built: false,
             originalSrc: src,
             query: getQuery(src),
             useApi: useApi(vendor, restDataAttrs.title, dataLoadThumbnail),
@@ -290,6 +292,9 @@ const Lazyframe = () => {
             build(instance);
             return;
         }
+
+        // Ensures the data for the element is not fetched again if this function is called mutliple times.
+        instance.settings.useApi = false;
 
         const endpoint = constants.endpoint(instance.settings);
 
@@ -360,6 +365,8 @@ const Lazyframe = () => {
     }
 
     function build(instance: LazyframeInstance): void {
+        if (instance.settings.built) return;
+
         if (instance.settings.thumbnails.length) {
             setBackground(instance.el, instance.settings.thumbnails);
         }
@@ -379,6 +386,10 @@ const Lazyframe = () => {
         if (instance.settings.onLoad) {
             instance.settings.onLoad(instance);
         }
+
+        // If this function is called during setup or by the intersection observer,
+        // ensure the build only occurs once.
+        instance.settings.built = true;
     }
 
     function getIframe(settings: LazyframeSettings): HTMLIFrameElement {
