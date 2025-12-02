@@ -53,6 +53,7 @@ interface HTMLLazyframeElement extends HTMLElement {
 type LazyframeSettings = LazyframeOptions & Omit<LazyframeDatasetOptions, 'thumbnail'> & {
     initialized: boolean;
     originalSrc: string;
+    useApi: boolean;
     thumbnails: string[];
     id?: string;
     query?: string;
@@ -98,7 +99,7 @@ const providers: Record<Vendor, VideoProvider> = {
 // --- Library Code ---
 
 const Lazyframe = () => {
-    let programmaticOptions: LazyframeOptions;
+    let programmaticOptions: Partial<LazyframeSettings>;
     const elements: Map<HTMLLazyframeElement, LazyframeInstance> = new Map();
     const DEFAULT_OPTIONS: Partial<LazyframeSettings> = {
         lazyload: true,
@@ -135,26 +136,7 @@ const Lazyframe = () => {
             els.forEach(loop);
         }
 
-        // TODO:
-        // Observers are currently initialized regardless of the value set with the `data-lazyload` attribute.
-        // Right now, the only way to configure this behavior is by passing a `lazyload` option when calling
-        // the `lazyframe` function:
-        //
-        // ```
-        // lazyframe('.selector', { lazyload: false });
-        // ```
-        //
-        // If all elements found during initialization have `data-lazyload="false"`, the observer is still created,
-        // but it should not be.
-        //
-        // A better approach would be to use a global flag like `enableLazyloadObserver`, initialized to `false`.
-        // During initialization, if any element has `data-lazyload="true"`, the flag would be set to `true`.
-        //
-        // This ensures the observer is only created when at least one element actually requires lazy loading.
-        //
-        if (programmaticOptions.lazyload) {
-            setObservers();
-        }
+        setObservers();
     }
 
     function loop(el: HTMLLazyframeElement): void {
@@ -184,14 +166,18 @@ const Lazyframe = () => {
             }
         });
 
-        if (instance.settings.lazyload) {
-            build(instance);
-        } else {
+        if (!instance.settings.lazyload) {
             api(instance);
+        }
+
+        if (!elements.has(instance.el)) {
+            // Subscribe to observer regardless if the element was force to load with `data-lazyload="false"` or not.
+            elements.set(instance.el, instance);
         }
 
         // Assign this at the end to avoid polution during the setup.
         el.dataset.lazyloadReady = 'true';
+        instance.el.classList.add('lazyframe--loaded');
     }
 
     function setup(el: HTMLLazyframeElement): LazyframeSettings {
@@ -251,6 +237,8 @@ const Lazyframe = () => {
             initialized: false, // Always start as not initialized
             originalSrc: src,
             query: getQuery(src),
+            useApi: useApi(vendor, restDataAttrs.title, dataLoadThumbnail),
+
             // Parse booleans with defaults and override programmatic options if `data-*` attributes were defined.
             lazyload: parseBoolean(lazyload, programmaticOptions.lazyload),
             autoplay: parseBoolean(autoplay, programmaticOptions.autoplay),
@@ -284,9 +272,12 @@ const Lazyframe = () => {
      * @param [thumbnail] - The current thumbnail (if any).
      * @returns `true` if the API needs to be called to backfill missing data.
      */
-    function useApi(settings: LazyframeSettings): boolean {
-        if (!settings.vendor) return false;
-        return !settings.title || !settings.thumbnail;
+    function useApi(vendor?: Vendor, dataTitle?: string, thumbnail?: string): boolean {
+        // Trim ensures we check for actual content.
+        const hasTitle = dataTitle?.trim();
+        const hasThumb = thumbnail?.trim();
+
+        return !!vendor && (!hasTitle || !hasThumb);
     }
 
     function parseBoolean(value: string | undefined, defaultValue: boolean = false): boolean {
@@ -295,8 +286,8 @@ const Lazyframe = () => {
     }
 
     async function api(instance: LazyframeInstance): Promise<void> {
-        if (!useApi(instance.settings)) {
-            build(instance, true);
+        if (!instance.settings.useApi) {
+            build(instance);
             return;
         }
 
@@ -320,11 +311,11 @@ const Lazyframe = () => {
                 }
             }
 
-            build(instance, true);
+            build(instance);
         } catch (error) {
             console.error('Lazyframe API call failed:', error);
             // Build the frame anyway so the user experience isn't broken
-            build(instance, true);
+            build(instance);
         }
     }
 
@@ -341,16 +332,11 @@ const Lazyframe = () => {
             if (instance.settings.initialized) return;
 
             instance.settings.initialized = true;
-            instance.el.classList.add('lazyframe--loaded');
 
             api(instance);
 
             if (instance.settings.initinview) {
                 instance.el.click();
-            }
-
-            if (instance.settings.onLoad) {
-                instance.settings.onLoad(instance);
             }
         };
 
@@ -358,6 +344,7 @@ const Lazyframe = () => {
             entries.forEach((entry) => {
                 if (entry.isIntersecting) {
                     const instance = elements.get(entry.target as HTMLLazyframeElement);
+
                     if (instance) {
                         initElement(instance);
                         lazyframeObserver.unobserve(entry.target);
@@ -372,14 +359,14 @@ const Lazyframe = () => {
         });
     }
 
-    function build(instance: LazyframeInstance, loadthumbnailOnInit = false): void {
-        if (loadthumbnailOnInit && instance.settings.thumbnails.length) {
-            console.log(`[build] [${instance.el.id}] call setBackground`);
+    function build(instance: LazyframeInstance): void {
+        if (instance.settings.thumbnails.length) {
             setBackground(instance.el, instance.settings.thumbnails);
         }
 
         if (instance.settings.title && !instance.el.querySelector('.lazyframe__title')) {
             const titleNode = document.createElement('span');
+
             titleNode.className = 'lazyframe__title';
             titleNode.textContent = instance.settings.title;
             instance.el.appendChild(titleNode);
@@ -389,15 +376,8 @@ const Lazyframe = () => {
             instance.el.appendChild(setPlayBtn());
         }
 
-        if (!instance.settings.lazyload) {
-            instance.el.classList.add('lazyframe--loaded');
-            if (instance.settings.onLoad) {
-                instance.settings.onLoad(instance);
-            }
-        }
-
-        if (!instance.settings.initialized) {
-            elements.set(instance.el, instance);
+        if (instance.settings.onLoad) {
+            instance.settings.onLoad(instance);
         }
     }
 
