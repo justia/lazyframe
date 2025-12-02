@@ -213,7 +213,7 @@ const Lazyframe = () => {
         let vendor = dataVendor;
         let id: LazyframeSettings['id'];
         const loadThumbnail = parseBoolean(dataLoadThumbnail, programmaticOptions.loadThumbnail);
-        const thumbnails = loadThumbnail && dataLoadThumbnail ? getBackgrounds(dataLoadThumbnail) : [];
+        const thumbnails = loadThumbnail && dataThumbnail ? getBackgrounds(dataThumbnail) : [];
         const autoplay = parseBoolean(dataAutoplay, programmaticOptions.autoplay);
         const query = getQuery(dataSrc);
 
