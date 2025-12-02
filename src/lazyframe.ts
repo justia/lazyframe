@@ -287,15 +287,17 @@ const Lazyframe = () => {
     }
 
     async function api(instance: LazyframeInstance): Promise<void> {
-        if (!instance.settings.useApi) {
+        const { settings } = instance;
+
+        if (!settings.useApi) {
             build(instance);
             return;
         }
 
         // Ensures the data for the element is not fetched again if this function is called mutliple times.
-        instance.settings.useApi = false;
+        settings.useApi = false;
 
-        const endpoint = constants.endpoint(instance.settings);
+        const endpoint = constants.endpoint(settings);
 
         try {
             const response = await fetch(endpoint);
@@ -304,14 +306,14 @@ const Lazyframe = () => {
             }
             const { title, thumbnail_url }: NoEmbedResponse = await response.json();
 
-            if (!instance.settings.title) {
-                instance.settings.title = title;
+            if (!settings.title) {
+                settings.title = title;
             }
-            if (!instance.settings.thumbnails.length && instance.settings.loadThumbnail) {
-                instance.settings.thumbnails = getBackgrounds(thumbnail_url);
+            if (!settings.thumbnails.length && settings.loadThumbnail) {
+                settings.thumbnails = getBackgrounds(thumbnail_url);
 
-                if (instance.settings.onThumbnailLoad) {
-                    instance.settings.onThumbnailLoad(thumbnail_url);
+                if (settings.onThumbnailLoad) {
+                    settings.onThumbnailLoad(thumbnail_url);
                 }
             }
 
