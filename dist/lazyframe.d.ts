@@ -39,7 +39,6 @@ type LazyframeSettings = LazyframeOptions & Omit<LazyframeDatasetOptions, 'thumb
     useApi: boolean;
     thumbnails: string[];
     id?: string;
-    query?: string;
 };
 type LazyframeInstance = {
     el: HTMLLazyframeElement;

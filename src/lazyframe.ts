@@ -57,7 +57,6 @@ type LazyframeSettings = LazyframeOptions & Omit<LazyframeDatasetOptions, 'thumb
     useApi: boolean;
     thumbnails: string[];
     id?: string;
-    query?: string;
 };
 
 // The internal representation of a single lazyframe instance
@@ -72,28 +71,34 @@ type NoEmbedResponse = {
     thumbnail_url: string;
 }
 
+type VideoParams = {
+    id: string;
+    autoplay: boolean;
+    query?: string;
+}
+
 type VideoProvider = {
     regex: RegExp;
     condition: (match: RegExpMatchArray | null) => string | undefined;
-    buildSrc: (settings: LazyframeSettings) => string;
+    buildSrc: (params: VideoParams) => string;
 }
 
 const providers: Record<Vendor, VideoProvider> = {
     youtube: {
         regex: /(?:youtube\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\?(?:\S*?&?v\=))|youtu\.be\/)([a-zA-Z0-9_-]{6,11})/,
         condition: (m) => (m && m[1].length === 11 ? m[1] : undefined),
-        buildSrc: (s) => `https://www.youtube.com/embed/${s.id}/?autoplay=${s.autoplay ? '1' : '0'}&${s.query || ''}`,
+        buildSrc: (p) => `https://www.youtube.com/embed/${p.id}/?autoplay=${p.autoplay ? '1' : '0'}&${p.query || ''}`,
     },
     youtube_nocookie: {
         regex: /(?:youtube-nocookie\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\?(?:\S*?&?v\=)))([a-zA-Z0-9_-]{6,11})/,
         condition: (m) => (m && m[1].length === 11 ? m[1] : undefined),
-        buildSrc: (s) =>
-            `https://www.youtube-nocookie.com/embed/${s.id}/?autoplay=${s.autoplay ? '1' : '0'}&${s.query || ''}`,
+        buildSrc: (p) =>
+            `https://www.youtube-nocookie.com/embed/${p.id}/?autoplay=${p.autoplay ? '1' : '0'}&${p.query || ''}`,
     },
     vimeo: {
         regex: /vimeo\.com\/(?:video\/)?([0-9]*)(?:\?|)/,
         condition: (m) => (m && m[1].length > 0 ? m[1] : undefined),
-        buildSrc: (s) => `https://player.vimeo.com/video/${s.id}/?autoplay=${s.autoplay ? '1' : '0'}&${s.query || ''}`,
+        buildSrc: (p) => `https://player.vimeo.com/video/${p.id}/?autoplay=${p.autoplay ? '1' : '0'}&${p.query || ''}`,
     },
 };
 
@@ -181,13 +186,13 @@ const Lazyframe = () => {
         const {
             // Extract known Boolean keys
             lazyload,
-            autoplay,
+            autoplay: dataAutoplay,
             initinview,
             loadThumbnail: dataLoadThumbnail,
             showPlayButton,
 
             // Extract other useful variables
-            src,
+            src: dataSrc,
             vendor: dataVendor,
             thumbnail: dataThumbnail,
 
@@ -196,24 +201,31 @@ const Lazyframe = () => {
         } = el.dataset;
 
         // Safety check for src
-        if (!src) {
+        if (!dataSrc) {
             throw new Error(`Lazyframe: The 'data-src' attribute must exist. Please make sure it is defined: ${el}`);
         }
 
+        let src = dataSrc;
         let vendor = dataVendor;
         let id: LazyframeSettings['id'];
         const loadThumbnail = parseBoolean(dataLoadThumbnail, programmaticOptions.loadThumbnail);
-        const thumbnails = loadThumbnail && dataLoadThumbnail ? getBackgrounds(dataLoadThumbnail) : [];
+        const thumbnails = loadThumbnail && dataThumbnail ? getBackgrounds(dataThumbnail) : [];
+        const autoplay = parseBoolean(dataAutoplay, programmaticOptions.autoplay);
+        const query = getQuery(dataSrc);
 
-        if (src.includes('youtube-nocookie')) {
+        if (dataSrc.includes('youtube-nocookie')) {
             vendor = 'youtube_nocookie';
         }
 
         if (vendor) {
             const provider = providers[vendor];
 
-            const match = src.match(provider.regex);
+            const match = dataSrc.match(provider.regex);
             id = provider.condition(match);
+
+            if (id) {
+                src = provider.buildSrc({ id, autoplay, query });
+            }
         }
 
         // Merge defaults, user settings, and data attributes in order of precedence
@@ -233,13 +245,12 @@ const Lazyframe = () => {
             // Set extra info.
             initialized: false, // Always start as not initialized
             built: false,
-            originalSrc: src,
-            query: getQuery(src),
+            originalSrc: dataSrc,
             useApi: useApi(vendor, restDataAttrs.title, dataLoadThumbnail),
 
             // Parse booleans with defaults and override programmatic options if `data-*` attributes were defined.
             lazyload: parseBoolean(lazyload, programmaticOptions.lazyload),
-            autoplay: parseBoolean(autoplay, programmaticOptions.autoplay),
+            autoplay,
             initinview: parseBoolean(initinview, programmaticOptions.initinview),
             loadThumbnail,
             showPlayButton: parseBoolean(showPlayButton, programmaticOptions.showPlayButton),
@@ -409,10 +420,6 @@ const Lazyframe = () => {
     function getIframe(settings: LazyframeSettings): HTMLIFrameElement {
         const { vendor, id, autoplay } = settings;
         const iframeNode = document.createElement('iframe');
-
-        if (vendor && providers[vendor]) {
-            settings.src = providers[vendor].buildSrc(settings);
-        }
 
         if (id) iframeNode.id = `lazyframe-${id}`;
 
