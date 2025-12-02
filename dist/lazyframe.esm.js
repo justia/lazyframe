@@ -239,7 +239,10 @@ const Lazyframe = () => {
         if (instance.settings.built)
             return;
         if (instance.settings.thumbnails.length) {
-            setBackground(instance.el, instance.settings.thumbnails);
+            const [img1, img2] = instance.settings.thumbnails;
+            instance.el.style.backgroundImage = img2
+                ? `-webkit-image-set(url('${img1}') 1x, url('${img2}') 1x)`
+                : `url('${img1}')`;
         }
         if (instance.settings.title && !instance.el.querySelector('.lazyframe__title')) {
             const titleNode = document.createElement('span');
@@ -275,11 +278,6 @@ const Lazyframe = () => {
     }
     function getBackgrounds(thumbnail) {
         return thumbnail.replace(/\s/g, '').split(',');
-    }
-    function setBackground(el, [img1, img2]) {
-        el.style.backgroundImage = img2
-            ? `-webkit-image-set(url('${img1}') 1x, url('${img2}') 1x)`
-            : `url('${img1}')`;
     }
     return init;
 };
