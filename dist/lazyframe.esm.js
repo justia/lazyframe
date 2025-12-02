@@ -2,17 +2,17 @@ const providers = {
     youtube: {
         regex: /(?:youtube\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\?(?:\S*?&?v\=))|youtu\.be\/)([a-zA-Z0-9_-]{6,11})/,
         condition: (m) => (m && m[1].length === 11 ? m[1] : undefined),
-        buildSrc: (s) => `https://www.youtube.com/embed/${s.id}/?autoplay=${s.autoplay ? '1' : '0'}&${s.query || ''}`,
+        buildSrc: (p) => `https://www.youtube.com/embed/${p.id}/?autoplay=${p.autoplay ? '1' : '0'}&${p.query || ''}`,
     },
     youtube_nocookie: {
         regex: /(?:youtube-nocookie\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\?(?:\S*?&?v\=)))([a-zA-Z0-9_-]{6,11})/,
         condition: (m) => (m && m[1].length === 11 ? m[1] : undefined),
-        buildSrc: (s) => `https://www.youtube-nocookie.com/embed/${s.id}/?autoplay=${s.autoplay ? '1' : '0'}&${s.query || ''}`,
+        buildSrc: (p) => `https://www.youtube-nocookie.com/embed/${p.id}/?autoplay=${p.autoplay ? '1' : '0'}&${p.query || ''}`,
     },
     vimeo: {
         regex: /vimeo\.com\/(?:video\/)?([0-9]*)(?:\?|)/,
         condition: (m) => (m && m[1].length > 0 ? m[1] : undefined),
-        buildSrc: (s) => `https://player.vimeo.com/video/${s.id}/?autoplay=${s.autoplay ? '1' : '0'}&${s.query || ''}`,
+        buildSrc: (p) => `https://player.vimeo.com/video/${p.id}/?autoplay=${p.autoplay ? '1' : '0'}&${p.query || ''}`,
     },
 };
 // --- Library Code ---
@@ -88,26 +88,32 @@ const Lazyframe = () => {
     function setup(el) {
         const { 
         // Extract known Boolean keys
-        lazyload, autoplay, initinview, loadThumbnail: dataLoadThumbnail, showPlayButton, 
+        lazyload, autoplay: dataAutoplay, initinview, loadThumbnail: dataLoadThumbnail, showPlayButton, 
         // Extract other useful variables
-        src, vendor: dataVendor, thumbnail: dataThumbnail, 
+        src: dataSrc, vendor: dataVendor, thumbnail: dataThumbnail, 
         // Capture the rest (vendor, title, thumbnail, ratio, etc.)
         ...restDataAttrs } = el.dataset;
         // Safety check for src
-        if (!src) {
+        if (!dataSrc) {
             throw new Error(`Lazyframe: The 'data-src' attribute must exist. Please make sure it is defined: ${el}`);
         }
+        let src = dataSrc;
         let vendor = dataVendor;
         let id;
         const loadThumbnail = parseBoolean(dataLoadThumbnail, programmaticOptions.loadThumbnail);
         const thumbnails = loadThumbnail && dataLoadThumbnail ? getBackgrounds(dataLoadThumbnail) : [];
-        if (src.includes('youtube-nocookie')) {
+        const autoplay = parseBoolean(dataAutoplay, programmaticOptions.autoplay);
+        const query = getQuery(dataSrc);
+        if (dataSrc.includes('youtube-nocookie')) {
             vendor = 'youtube_nocookie';
         }
         if (vendor) {
             const provider = providers[vendor];
-            const match = src.match(provider.regex);
+            const match = dataSrc.match(provider.regex);
             id = provider.condition(match);
+            if (id) {
+                src = provider.buildSrc({ id, autoplay, query });
+            }
         }
         // Merge defaults, user settings, and data attributes in order of precedence
         const options = {
@@ -123,12 +129,11 @@ const Lazyframe = () => {
             // Set extra info.
             initialized: false, // Always start as not initialized
             built: false,
-            originalSrc: src,
-            query: getQuery(src),
+            originalSrc: dataSrc,
             useApi: useApi(vendor, restDataAttrs.title, dataLoadThumbnail),
             // Parse booleans with defaults and override programmatic options if `data-*` attributes were defined.
             lazyload: parseBoolean(lazyload, programmaticOptions.lazyload),
-            autoplay: parseBoolean(autoplay, programmaticOptions.autoplay),
+            autoplay,
             initinview: parseBoolean(initinview, programmaticOptions.initinview),
             loadThumbnail,
             showPlayButton: parseBoolean(showPlayButton, programmaticOptions.showPlayButton),
@@ -263,9 +268,6 @@ const Lazyframe = () => {
     // TODO: Extract to another module.
     function getIframe(settings) {
         const iframeNode = document.createElement('iframe');
-        if (settings.vendor && providers[settings.vendor]) {
-            settings.src = providers[settings.vendor].buildSrc(settings);
-        }
         if (settings.id)
             iframeNode.id = `lazyframe-${settings.id}`;
         iframeNode.src = settings.src;
