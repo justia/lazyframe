@@ -252,11 +252,13 @@ const Lazyframe = () => {
         return options;
     }
 
+    // TODO: Extract to another module.
     function getQuery(src: string): string | undefined {
         const query = src.split('?');
         return query[1] ? query[1] : undefined;
     }
 
+    // TODO: Extract to another module.
     /**
      * Checks if missing data needs to be fetched from the API.
      *
@@ -282,6 +284,7 @@ const Lazyframe = () => {
         return !!vendor && (!hasTitle || !hasThumb);
     }
 
+    // TODO: Extract to another module.
     function parseBoolean(value: string | undefined, defaultValue: boolean = false): boolean {
         if (value === undefined || value === null) return defaultValue;
         return value === 'true';
@@ -324,6 +327,7 @@ const Lazyframe = () => {
         }
     }
 
+    // TODO: Extract to another module.
     function setPlayBtn(btnTxt = 'Play'): HTMLButtonElement {
         const playButton = document.createElement('button');
         playButton.type = 'button';
@@ -392,6 +396,7 @@ const Lazyframe = () => {
         instance.settings.built = true;
     }
 
+    // TODO: Extract to another module.
     function getIframe(settings: LazyframeSettings): HTMLIFrameElement {
         const iframeNode = document.createElement('iframe');
 
