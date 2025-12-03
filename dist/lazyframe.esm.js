@@ -246,7 +246,7 @@ const Lazyframe = () => {
             titleNode.textContent = instance.settings.title;
             instance.el.appendChild(titleNode);
         }
-        if (instance.settings.showPlayButton) {
+        if (instance.settings.showPlayButton && !instance.el.querySelector('.lf-play-btn')) {
             instance.el.appendChild(setPlayBtn());
         }
         if (!instance.settings.lazyload) {
