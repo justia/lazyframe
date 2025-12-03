@@ -1,11 +1,9 @@
 import './scss/lazyframe.scss';
 type Vendor = 'youtube' | 'youtube_nocookie' | 'vimeo';
-interface LazyframeOptions {
-    vendor?: Vendor;
-    id?: string;
-    src?: string;
-    thumbnail?: string;
-    title?: string;
+type AspectRatio = '16:9' | '4:3' | '1:1';
+type StringBoolean = 'true' | 'false';
+type ConvertStringBool<T> = T extends StringBoolean ? boolean : T;
+type LazyframeOptions = {
     lazyload?: boolean;
     autoplay?: boolean;
     initinview?: boolean;
@@ -14,16 +12,36 @@ interface LazyframeOptions {
     onLoad?: (instance: LazyframeInstance) => void;
     onAppend?: (iframe: HTMLIFrameElement) => void;
     onThumbnailLoad?: (imgUrl: string) => void;
+};
+type LazyframeDatasetStringOptions = {
+    src: string;
+    vendor?: Vendor;
+    title?: string;
+    thumbnail?: string;
+    ratio?: AspectRatio;
+    lazyload?: StringBoolean;
+    autoplay?: StringBoolean;
+    initinview?: StringBoolean;
+    loadThumbnail?: StringBoolean;
+    showPlayButton?: StringBoolean;
+    lazyloadReady?: StringBoolean;
+};
+type LazyframeDatasetOptions = {
+    [K in keyof Omit<LazyframeDatasetStringOptions, 'lazyloadReady'>]: ConvertStringBool<LazyframeDatasetStringOptions[K]>;
+};
+interface HTMLLazyframeElement extends HTMLElement {
+    dataset: LazyframeDatasetStringOptions;
 }
-interface LazyframeSettings extends LazyframeOptions {
+type LazyframeSettings = LazyframeOptions & LazyframeDatasetOptions & {
     initialized: boolean;
-    originalSrc?: string;
-    query?: string | null;
-}
-interface LazyframeInstance {
-    el: HTMLElement;
+    originalSrc: string;
+    id?: string;
+    query?: string;
+};
+type LazyframeInstance = {
+    el: HTMLLazyframeElement;
     settings: LazyframeSettings;
     iframe?: HTMLIFrameElement;
-}
-declare const lazyframe: (selector: string | HTMLElement | NodeListOf<HTMLElement>, userOptions?: LazyframeOptions) => void;
+};
+declare const lazyframe: (selector: string | HTMLLazyframeElement | NodeListOf<HTMLLazyframeElement>, userOptions?: LazyframeOptions) => void;
 export default lazyframe;

@@ -3,14 +3,13 @@ import './scss/lazyframe.scss';
 // --- Type Definitions ---
 
 type Vendor = 'youtube' | 'youtube_nocookie' | 'vimeo';
+type AspectRatio = '16:9' | '4:3' | '1:1';
+type StringBoolean = 'true' | 'false';
+// Helper to verify if a value is strictly 'true' | 'false'.
+type ConvertStringBool<T> = T extends StringBoolean ? boolean : T;
 
-// Options the user can pass during initialization
-interface LazyframeOptions {
-    vendor?: Vendor;
-    id?: string;
-    src?: string;
-    thumbnail?: string;
-    title?: string;
+// Options the user can set during a programmatic initialization.
+type LazyframeOptions = {
     lazyload?: boolean;
     autoplay?: boolean;
     initinview?: boolean;
@@ -21,46 +20,75 @@ interface LazyframeOptions {
     onThumbnailLoad?: (imgUrl: string) => void;
 }
 
-// Fully resolved settings for an instance, merging defaults and data-attributes
-interface LazyframeSettings extends LazyframeOptions {
-    initialized: boolean;
-    originalSrc?: string;
-    query?: string | null;
+// Defines all the possible `data-*` attributes that the element could have.
+type LazyframeDatasetStringOptions = {
+    src: string;
+    vendor?: Vendor;
+    title?: string;
+    thumbnail?: string;
+    ratio?: AspectRatio;
+    lazyload?: StringBoolean;
+    autoplay?: StringBoolean;
+    initinview?: StringBoolean;
+    loadThumbnail?: StringBoolean;
+    showPlayButton?: StringBoolean;
+    // Programatically added. Is not meant to be set manually by the user.
+    lazyloadReady?: StringBoolean;
+};
+
+// 2. The Transformation Type
+type LazyframeDatasetOptions = {
+    // Iterate over every key EXCEPT 'lazyloadReady'
+    [K in keyof Omit<LazyframeDatasetStringOptions, 'lazyloadReady'>]:
+        // Apply the conversion helper to the value
+        ConvertStringBool<LazyframeDatasetStringOptions[K]>
+};
+
+interface HTMLLazyframeElement extends HTMLElement {
+    dataset: LazyframeDatasetStringOptions;
 }
 
+// Fully resolved settings for an instance, merging defaults, user settings, data-attributes and extra values defined during execution.
+type LazyframeSettings = LazyframeOptions & LazyframeDatasetOptions & {
+    initialized: boolean;
+    originalSrc: string;
+    id?: string;
+    query?: string;
+};
+
 // The internal representation of a single lazyframe instance
-interface LazyframeInstance {
-    el: HTMLElement;
+type LazyframeInstance = {
+    el: HTMLLazyframeElement;
     settings: LazyframeSettings;
     iframe?: HTMLIFrameElement;
 }
 
-interface NoEmbedResponse {
+type NoEmbedResponse = {
     title: string;
     thumbnail_url: string;
 }
 
-interface VideoProvider {
+type VideoProvider = {
     regex: RegExp;
-    condition: (match: RegExpMatchArray | null) => string | false;
+    condition: (match: RegExpMatchArray | null) => string | undefined;
     buildSrc: (settings: LazyframeSettings) => string;
 }
 
 const providers: Record<Vendor, VideoProvider> = {
     youtube: {
         regex: /(?:youtube\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\?(?:\S*?&?v\=))|youtu\.be\/)([a-zA-Z0-9_-]{6,11})/,
-        condition: (m) => (m && m[1].length === 11 ? m[1] : false),
+        condition: (m) => (m && m[1].length === 11 ? m[1] : undefined),
         buildSrc: (s) => `https://www.youtube.com/embed/${s.id}/?autoplay=${s.autoplay ? '1' : '0'}&${s.query || ''}`,
     },
     youtube_nocookie: {
         regex: /(?:youtube-nocookie\.com\/\S*(?:(?:\/e(?:mbed))?\/|watch\?(?:\S*?&?v\=)))([a-zA-Z0-9_-]{6,11})/,
-        condition: (m) => (m && m[1].length === 11 ? m[1] : false),
+        condition: (m) => (m && m[1].length === 11 ? m[1] : undefined),
         buildSrc: (s) =>
             `https://www.youtube-nocookie.com/embed/${s.id}/?autoplay=${s.autoplay ? '1' : '0'}&${s.query || ''}`,
     },
     vimeo: {
         regex: /vimeo\.com\/(?:video\/)?([0-9]*)(?:\?|)/,
-        condition: (m) => (m && m[1].length > 0 ? m[1] : false),
+        condition: (m) => (m && m[1].length > 0 ? m[1] : undefined),
         buildSrc: (s) => `https://player.vimeo.com/video/${s.id}/?autoplay=${s.autoplay ? '1' : '0'}&${s.query || ''}`,
     },
 };
@@ -68,10 +96,9 @@ const providers: Record<Vendor, VideoProvider> = {
 // --- Library Code ---
 
 const Lazyframe = () => {
-    let settings: LazyframeOptions;
-    const elements: Map<HTMLElement, LazyframeInstance> = new Map();
-    const defaults: LazyframeSettings = {
-        initialized: false,
+    let programmaticOptions: LazyframeOptions;
+    const elements: Map<HTMLLazyframeElement, LazyframeInstance> = new Map();
+    const DEFAULT_OPTIONS: Partial<LazyframeSettings> = {
         lazyload: true,
         autoplay: true,
         loadThumbnail: true,
@@ -95,10 +122,10 @@ const Lazyframe = () => {
         },
     };
 
-    function init(selector: string | HTMLElement | NodeListOf<HTMLElement>, userOptions?: LazyframeOptions): void {
-        settings = { ...defaults, ...userOptions };
+    function init(selector: string | HTMLLazyframeElement | NodeListOf<HTMLLazyframeElement>, userOptions: LazyframeOptions = {}): void {
+        programmaticOptions = { ...DEFAULT_OPTIONS , ...userOptions };
 
-        const els = typeof selector === 'string' ? document.querySelectorAll<HTMLElement>(selector) : selector;
+        const els = typeof selector === 'string' ? document.querySelectorAll<HTMLLazyframeElement>(selector) : selector;
 
         if (els instanceof HTMLElement) {
             loop(els);
@@ -106,25 +133,40 @@ const Lazyframe = () => {
             els.forEach(loop);
         }
 
-        if (settings.lazyload) {
+        // TODO:
+        // Observers are currently initialized regardless of the value set with the `data-lazyload` attribute.
+        // Right now, the only way to configure this behavior is by passing a `lazyload` option when calling
+        // the `lazyframe` function:
+        //
+        // ```
+        // lazyframe('.selector', { lazyload: false });
+        // ```
+        //
+        // If all elements found during initialization have `data-lazyload="false"`, the observer is still created,
+        // but it should not be.
+        //
+        // A better approach would be to use a global flag like `enableLazyloadObserver`, initialized to `false`.
+        // During initialization, if any element has `data-lazyload="true"`, the flag would be set to `true`.
+        //
+        // This ensures the observer is only created when at least one element actually requires lazy loading.
+        //
+        if (programmaticOptions.lazyload) {
             setObservers();
         }
     }
 
-    function loop(el: HTMLElement): void {
+    function loop(el: HTMLLazyframeElement): void {
         if (!(el instanceof HTMLElement) || el.classList.contains('lazyframe--loaded')) return;
-
-        const instance: LazyframeInstance = {
-            el: el,
-            settings: setup(el),
-        };
 
         // There's cases where the `lazyload` library is loaded in two
         // different scripts, so we set a flag to know if an iframe
         // was already handled by lazyload previously
-        if (instance.el.dataset.lazyloadReady === '1') return;
+        if (el.dataset.lazyloadReady === 'true') return;
 
-        instance.el.dataset.lazyloadReady = '1';
+        const instance: LazyframeInstance = {
+            el,
+            settings: setup(el),
+        };
 
         instance.el.addEventListener('click', () => {
             if (instance.iframe) {
@@ -140,59 +182,84 @@ const Lazyframe = () => {
             }
         });
 
-        if (settings.lazyload) {
+        if (instance.settings.lazyload) {
             build(instance);
         } else {
             api(instance);
         }
+
+        // Assign this at the end to avoid polution during the setup.
+        el.dataset.lazyloadReady = 'true';
     }
 
-    function setup(el: HTMLElement): LazyframeSettings {
-        const data = { ...el.dataset };
+    function setup(el: HTMLLazyframeElement): LazyframeSettings {
+        const {
+            // Extract known Boolean keys
+            lazyload,
+            autoplay,
+            initinview,
+            loadThumbnail,
+            showPlayButton,
+
+            // Extract other useful variables
+            src,
+            vendor: dataVendor,
+
+            // Capture the rest (vendor, title, thumbnail, ratio, etc.)
+            ...restDataAttrs
+        } = el.dataset;
+
+        // Safety check for src
+        if (!src) {
+            throw new Error(`Lazyframe: The 'data-src' attribute must exist. Please make sure it is defined: ${el}`);
+        }
+
+        let vendor = dataVendor;
+        let id: LazyframeSettings['id'];
+
+
+        if (src.includes('youtube-nocookie')) {
+            vendor = 'youtube_nocookie';
+        }
+
+        if (vendor) {
+            const provider = providers[vendor];
+
+            const match = src.match(provider.regex);
+            id = provider.condition(match);
+        }
 
         // Merge defaults, user settings, and data attributes in order of precedence
-        const initialOptions: LazyframeSettings = {
-            ...settings, // Global settings
-            ...data, // Data attributes (will overwrite global settings if present)
-            initialized: false, // Always start as not initialized
-            originalSrc: data.src,
-            query: getQuery(data.src),
-        };
-
-        // Explicitly parse boolean attributes, ensuring they take final precedence
         const options: LazyframeSettings = {
-            ...initialOptions,
-            lazyload: parseBoolean(data.lazyload, initialOptions.lazyload),
-            autoplay: parseBoolean(data.autoplay, initialOptions.autoplay),
-            initinview: parseBoolean(data.initinview, initialOptions.initinview),
-            loadThumbnail: parseBoolean(data.loadThumbnail, initialOptions.loadThumbnail),
-            showPlayButton: parseBoolean(data.showPlayButton, initialOptions.showPlayButton),
+            // First spread programmating options. Specifically `onLoad`, `onAppend` and `onThumbnailLoad`.
+            ...programmaticOptions,
+
+            // Spread the remaining data attributes defined on each element.
+            ...restDataAttrs,
+
+            // Set props that could only be obtained through `data-*` attributes.
+            src,
+            vendor,
+            id,
+
+            // Set extra info.
+            initialized: false, // Always start as not initialized
+            originalSrc: src,
+            query: getQuery(src),
+            // Parse booleans with defaults and override programmatic options if `data-*` attributes were defined.
+            lazyload: parseBoolean(lazyload, programmaticOptions.lazyload),
+            autoplay: parseBoolean(autoplay, programmaticOptions.autoplay),
+            initinview: parseBoolean(initinview, programmaticOptions.initinview),
+            loadThumbnail: parseBoolean(loadThumbnail, programmaticOptions.loadThumbnail),
+            showPlayButton: parseBoolean(showPlayButton, programmaticOptions.showPlayButton),
         };
-
-        if (options.src?.includes('youtube-nocookie')) {
-            options.vendor = 'youtube_nocookie';
-        }
-
-        if (options.vendor && options.src) {
-            const provider = providers[options.vendor];
-
-            if (provider) {
-                const match = options.src.match(provider.regex);
-                const id = provider.condition(match);
-
-                if (id) {
-                    options.id = id;
-                }
-            }
-        }
 
         return options;
     }
 
-    function getQuery(src: string | undefined): string | null {
-        if (!src) return null;
+    function getQuery(src: string): string | undefined {
         const query = src.split('?');
-        return query[1] ? query[1] : null;
+        return query[1] ? query[1] : undefined;
     }
 
     function useApi(settings: LazyframeSettings): boolean {
@@ -239,7 +306,7 @@ const Lazyframe = () => {
         }
     }
 
-    function setPlayBtn(btnTxt: string = 'Play'): HTMLButtonElement {
+    function setPlayBtn(btnTxt = 'Play'): HTMLButtonElement {
         const playButton = document.createElement('button');
         playButton.type = 'button';
         playButton.classList.add('lf-play-btn');
@@ -253,9 +320,7 @@ const Lazyframe = () => {
 
             instance.settings.initialized = true;
             instance.el.classList.add('lazyframe--loaded');
-            if (instance.settings.showPlayButton) {
-                instance.el.appendChild(setPlayBtn());
-            }
+
             api(instance);
 
             if (instance.settings.initinview) {
@@ -267,26 +332,22 @@ const Lazyframe = () => {
             }
         };
 
-        if ('IntersectionObserver' in window) {
-            const lazyframeObserver = new IntersectionObserver((entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        const instance = elements.get(entry.target as HTMLElement);
-                        if (instance) {
-                            initElement(instance);
-                            lazyframeObserver.unobserve(entry.target);
-                            elements.delete(entry.target as HTMLElement);
-                        }
+        const lazyframeObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    const instance = elements.get(entry.target as HTMLLazyframeElement);
+                    if (instance) {
+                        initElement(instance);
+                        lazyframeObserver.unobserve(entry.target);
+                        elements.delete(entry.target as HTMLLazyframeElement);
                     }
-                });
+                }
             });
+        });
 
-            elements.forEach((instance) => {
-                lazyframeObserver.observe(instance.el);
-            });
-        } else {
-            elements.forEach(initElement);
-        }
+        elements.forEach((instance) => {
+            lazyframeObserver.observe(instance.el);
+        });
     }
 
     function build(instance: LazyframeInstance, loadImage?: boolean): void {
@@ -310,7 +371,11 @@ const Lazyframe = () => {
             instance.el.appendChild(titleNode);
         }
 
-        if (!settings.lazyload) {
+        if (instance.settings.showPlayButton && !instance.el.querySelector<HTMLButtonElement>('.lf-play-btn')) {
+            instance.el.appendChild(setPlayBtn());
+        }
+
+        if (!instance.settings.lazyload) {
             instance.el.classList.add('lazyframe--loaded');
             if (instance.settings.onLoad) {
                 instance.settings.onLoad(instance);
@@ -329,10 +394,11 @@ const Lazyframe = () => {
             settings.src = providers[settings.vendor].buildSrc(settings);
         }
 
-        iframeNode.setAttribute('id', `lazyframe-${settings.id}`);
-        iframeNode.setAttribute('src', settings.src || '');
-        iframeNode.setAttribute('frameborder', '0');
-        iframeNode.setAttribute('allowfullscreen', '');
+        if (settings.id) iframeNode.id = `lazyframe-${settings.id}`;
+
+        iframeNode.src = settings.src;
+        iframeNode.frameBorder = '0';
+        iframeNode.allowFullscreen = true;
 
         if (settings.autoplay) {
             iframeNode.allow = 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture';
@@ -340,6 +406,7 @@ const Lazyframe = () => {
 
         return iframeNode;
     }
+
     return init;
 };
 
