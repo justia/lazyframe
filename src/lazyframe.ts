@@ -145,34 +145,30 @@ const Lazyframe = () => {
         if (!(el instanceof HTMLElement) || el.classList.contains('lazyframe--loaded')) return;
 
         const settings = setup(el);
-        const instance: LazyframeInstance = {
-            el,
-            iframe: getIframe(settings),
-            settings,
-        };
+        const iframe = getIframe(settings);
 
-        instance.el.addEventListener('click', () => {
-            instance.el.appendChild(instance.iframe);
+        const instance: LazyframeInstance = { el, settings, iframe };
 
-            instance.el.classList.add('lazyframe--activated');
+        el.addEventListener('click', () => {
+            el.appendChild(iframe);
 
-            const iframe = el.querySelector<HTMLIFrameElement>('iframe');
+            el.classList.add('lazyframe--activated');
 
-            if (iframe && instance.settings.onAppend) {
-                instance.settings.onAppend(iframe);
+            if (settings.onAppend) {
+                settings.onAppend(iframe);
             }
         });
 
-        if (!instance.settings.lazyload) {
+        if (!settings.lazyload) {
             api(instance);
         }
 
-        if (!elements.has(instance.el)) {
+        if (!elements.has(el)) {
             // Subscribe to observer regardless if the element was force to load with `data-lazyload="false"` or not.
-            elements.set(instance.el, instance);
+            elements.set(el, instance);
         }
 
-        instance.el.classList.add('lazyframe--loaded');
+        el.classList.add('lazyframe--loaded');
     }
 
     function setup(el: HTMLLazyframeElement): LazyframeSettings {
@@ -294,15 +290,17 @@ const Lazyframe = () => {
     }
 
     async function api(instance: LazyframeInstance): Promise<void> {
-        if (!instance.settings.useApi) {
+        const { settings } = instance;
+
+        if (!settings.useApi) {
             build(instance);
             return;
         }
 
         // Ensures the data for the element is not fetched again if this function is called mutliple times.
-        instance.settings.useApi = false;
+        settings.useApi = false;
 
-        const endpoint = constants.endpoint(instance.settings);
+        const endpoint = constants.endpoint(settings);
 
         try {
             const response = await fetch(endpoint);
@@ -311,14 +309,14 @@ const Lazyframe = () => {
             }
             const { title, thumbnail_url }: NoEmbedResponse = await response.json();
 
-            if (!instance.settings.title) {
-                instance.settings.title = title;
+            if (!settings.title) {
+                settings.title = title;
             }
-            if (!instance.settings.thumbnails.length && instance.settings.loadThumbnail) {
-                instance.settings.thumbnails = getBackgrounds(thumbnail_url);
+            if (!settings.thumbnails.length && settings.loadThumbnail) {
+                settings.thumbnails = getBackgrounds(thumbnail_url);
 
-                if (instance.settings.onThumbnailLoad) {
-                    instance.settings.onThumbnailLoad(thumbnail_url);
+                if (settings.onThumbnailLoad) {
+                    settings.onThumbnailLoad(thumbnail_url);
                 }
             }
 
@@ -341,80 +339,88 @@ const Lazyframe = () => {
 
     function setObservers(): void {
         const initElement = async (instance: LazyframeInstance) => {
-            if (instance.settings.initialized) return;
+            const { settings, el } = instance;
 
-            instance.settings.initialized = true;
+            if (settings.initialized) return;
+
+            settings.initialized = true;
 
             await api(instance);
 
-            if (instance.settings.initinview) {
-                instance.el.click();
+            if (settings.initinview) {
+                el.click();
             }
         };
 
         const lazyframeObserver = new IntersectionObserver((entries) => {
-            entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                    const instance = elements.get(entry.target as HTMLLazyframeElement);
+            entries.forEach(({ isIntersecting, target }) => {
+                if (isIntersecting) {
+                    const t = target as HTMLLazyframeElement;
+                    const instance = elements.get(t);
 
                     if (instance) {
                         initElement(instance);
-                        lazyframeObserver.unobserve(entry.target);
-                        elements.delete(entry.target as HTMLLazyframeElement);
+                        lazyframeObserver.unobserve(t);
+                        elements.delete(t);
                     }
                 }
             });
         });
 
-        elements.forEach((instance) => {
-            lazyframeObserver.observe(instance.el);
+        elements.forEach(({ el }) => {
+            lazyframeObserver.observe(el);
         });
     }
 
     function build(instance: LazyframeInstance): void {
-        if (instance.settings.built) return;
+        const { el, settings } = instance;
 
-        if (instance.settings.thumbnails.length) {
-            const [img1, img2] = instance.settings.thumbnails;
+        if (settings.built) return;
 
-            instance.el.style.backgroundImage = img2
+        const { thumbnails, title, showPlayButton, onLoad } = settings;
+
+        if (thumbnails.length) {
+            const [img1, img2] = thumbnails;
+
+            el.style.backgroundImage = img2
                 ? `-webkit-image-set(url('${img1}') 1x, url('${img2}') 1x)`
                 : `url('${img1}')`;
         }
 
-        if (instance.settings.title && !instance.el.querySelector('.lazyframe__title')) {
+        if (title && !el.querySelector('.lazyframe__title')) {
             const titleNode = document.createElement('span');
 
             titleNode.className = 'lazyframe__title';
-            titleNode.textContent = instance.settings.title;
-            instance.el.appendChild(titleNode);
+            titleNode.textContent = title;
+            el.appendChild(titleNode);
         }
 
-        if (instance.settings.showPlayButton) {
-            instance.el.appendChild(setPlayBtn());
+        if (showPlayButton) {
+            el.appendChild(setPlayBtn());
         }
 
-        if (instance.settings.onLoad) {
-            instance.settings.onLoad(instance);
+        if (onLoad) {
+            onLoad(instance);
         }
 
         // If this function is called during setup or by the intersection observer,
         // ensure the build only occurs once.
-        instance.settings.built = true;
-        instance.el.classList.add('lazyframe--ready');
+        settings.built = true;
+        el.classList.add('lazyframe--ready');
     }
 
     // TODO: Extract to another module.
     function getIframe(settings: LazyframeSettings): HTMLIFrameElement {
+        const { src, id, autoplay } = settings;
         const iframeNode = document.createElement('iframe');
 
-        if (settings.id) iframeNode.id = `lazyframe-${settings.id}`;
+        if (id) iframeNode.id = `lazyframe-${id}`;
 
-        iframeNode.src = settings.src;
+        iframeNode.src = src;
         iframeNode.frameBorder = '0';
         iframeNode.allowFullscreen = true;
 
-        if (settings.autoplay) {
+        if (autoplay) {
             iframeNode.allow = 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture';
         }
 
