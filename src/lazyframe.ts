@@ -32,15 +32,11 @@ type LazyframeDatasetStringOptions = {
     initinview?: StringBoolean;
     loadThumbnail?: StringBoolean;
     showPlayButton?: StringBoolean;
-    // Programatically added. Is not meant to be set manually by the user.
-    lazyloadReady?: StringBoolean;
 };
 
-// 2. The Transformation Type
+// The Transformation Type
 type LazyframeDatasetOptions = {
-    // Iterate over every key EXCEPT 'lazyloadReady'
-    [K in keyof Omit<LazyframeDatasetStringOptions, 'lazyloadReady'>]:
-        // Apply the conversion helper to the value
+    [K in keyof LazyframeDatasetStringOptions]:
         ConvertStringBool<LazyframeDatasetStringOptions[K]>
 };
 
