@@ -24,10 +24,9 @@ type LazyframeDatasetStringOptions = {
     initinview?: StringBoolean;
     loadThumbnail?: StringBoolean;
     showPlayButton?: StringBoolean;
-    lazyloadReady?: StringBoolean;
 };
 type LazyframeDatasetOptions = {
-    [K in keyof Omit<LazyframeDatasetStringOptions, 'lazyloadReady'>]: ConvertStringBool<LazyframeDatasetStringOptions[K]>;
+    [K in keyof LazyframeDatasetStringOptions]: ConvertStringBool<LazyframeDatasetStringOptions[K]>;
 };
 interface HTMLLazyframeElement extends HTMLElement {
     dataset: LazyframeDatasetStringOptions;
