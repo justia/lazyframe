@@ -1,6 +1,6 @@
 {
   "name": "@justia/lazyframe",
-  "version": "2.4.1",
+  "version": "2.5.0",
   "description": "Dependency-free library for lazyloading iframes",
   "bugs": {
     "url": "https://github.com/justia/lazyframe/issues"
