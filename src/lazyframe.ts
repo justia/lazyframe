@@ -9,7 +9,7 @@ type StringBoolean = 'true' | 'false';
 type ConvertStringBool<T> = T extends StringBoolean ? boolean : T;
 
 // Options the user can set during a programmatic initialization.
-type LazyframeOptions = {
+export type LazyframeOptions = {
     lazyload?: boolean;
     autoplay?: boolean;
     initinview?: boolean;
@@ -21,7 +21,7 @@ type LazyframeOptions = {
 };
 
 // Defines all the possible `data-*` attributes that the element could have.
-type LazyframeDatasetStringOptions = {
+export type LazyframeDatasetStringOptions = {
     src: string;
     vendor?: Vendor;
     title?: string;
@@ -39,7 +39,7 @@ type LazyframeDatasetOptions = {
     [K in keyof LazyframeDatasetStringOptions]: ConvertStringBool<LazyframeDatasetStringOptions[K]>;
 };
 
-interface HTMLLazyframeElement extends HTMLElement {
+export interface HTMLLazyframeElement extends HTMLElement {
     dataset: LazyframeDatasetStringOptions;
 }
 
