@@ -55,11 +55,6 @@ const Lazyframe = () => {
     function loop(el) {
         if (!(el instanceof HTMLElement) || el.classList.contains('lazyframe--loaded'))
             return;
-        // There's cases where the `lazyload` library is loaded in two
-        // different scripts, so we set a flag to know if an iframe
-        // was already handled by lazyload previously
-        if (el.dataset.lazyloadReady === 'true')
-            return;
         const settings = setup(el);
         const iframe = getIframe(settings);
         const instance = { el, settings, iframe };
@@ -77,8 +72,6 @@ const Lazyframe = () => {
             // Subscribe to observer regardless if the element was force to load with `data-lazyload="false"` or not.
             elements.set(el, instance);
         }
-        // Assign this at the end to avoid polution during the setup.
-        el.dataset.lazyloadReady = 'true';
         el.classList.add('lazyframe--loaded');
     }
     function setup(el) {
@@ -126,7 +119,7 @@ const Lazyframe = () => {
             initialized: false, // Always start as not initialized
             built: false,
             originalSrc: dataSrc,
-            useApi: useApi(vendor, restDataAttrs.title, dataLoadThumbnail),
+            useApi: useApi(vendor, restDataAttrs.title, dataThumbnail, loadThumbnail),
             // Parse booleans with defaults and override programmatic options if `data-*` attributes were defined.
             lazyload: parseBoolean(lazyload, programmaticOptions.lazyload),
             autoplay,
@@ -146,24 +139,27 @@ const Lazyframe = () => {
      * Checks if missing data needs to be fetched from the API.
      *
      * The function returns `true` only if a valid Vendor exists, but
-     * the local data is incomplete (missing either a title or a thumbnail).
+     * the local data is incomplete.
      *
      * Logic Matrix:
-     * - No Vendor                -> false
-     * - Vendor + Title + Thumb   -> false (Data complete)
-     * - Vendor + No Title        -> true
-     * - Vendor + No Thumb        -> true
+     * - No Vendor                                     -> false
+     * - Vendor + Title + Thumb                        -> false (Data complete)
+     * - Vendor + Title + (Thumb?) + LoadThumb=False   -> false (Data complete. Thumb ignored)
+     * - Vendor + Title                                -> true  (Need Thumb)
+     * - Vendor + Thumb + LoadThumb=True               -> true  (Need Title)
+     * - Vendor + Thumb + LoadThumb=False              -> true  (Need Title)
      *
      * @param [vendor] - The target vendor.
      * @param [dataTitle] - The current title (if any).
      * @param [thumbnail] - The current thumbnail (if any).
+     * @param [loadThumbnail] - Whether the thumbnail should be displayed.
      * @returns `true` if the API needs to be called to backfill missing data.
      */
-    function useApi(vendor, dataTitle, thumbnail) {
+    function useApi(vendor, dataTitle, thumbnail, loadThumbnail) {
         // Trim ensures we check for actual content.
         const hasTitle = dataTitle?.trim();
         const hasThumb = thumbnail?.trim();
-        return !!vendor && (!hasTitle || !hasThumb);
+        return !!vendor && (!hasTitle || (!!loadThumbnail && !hasThumb));
     }
     // TODO: Extract to another module.
     function parseBoolean(value, defaultValue = false) {
@@ -265,6 +261,7 @@ const Lazyframe = () => {
         // If this function is called during setup or by the intersection observer,
         // ensure the build only occurs once.
         settings.built = true;
+        el.classList.add('lazyframe--ready');
     }
     // TODO: Extract to another module.
     function getIframe(settings) {
