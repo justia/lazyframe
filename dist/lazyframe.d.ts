@@ -3,7 +3,7 @@ type Vendor = 'youtube' | 'youtube_nocookie' | 'vimeo';
 type AspectRatio = '16:9' | '4:3' | '1:1';
 type StringBoolean = 'true' | 'false';
 type ConvertStringBool<T> = T extends StringBoolean ? boolean : T;
-type LazyframeOptions = {
+export type LazyframeOptions = {
     lazyload?: boolean;
     autoplay?: boolean;
     initinview?: boolean;
@@ -13,7 +13,7 @@ type LazyframeOptions = {
     onAppend?: (iframe: HTMLIFrameElement) => void;
     onThumbnailLoad?: (imgUrl: string) => void;
 };
-type LazyframeDatasetStringOptions = {
+export type LazyframeDatasetStringOptions = {
     src: string;
     vendor?: Vendor;
     title?: string;
@@ -28,7 +28,7 @@ type LazyframeDatasetStringOptions = {
 type LazyframeDatasetOptions = {
     [K in keyof LazyframeDatasetStringOptions]: ConvertStringBool<LazyframeDatasetStringOptions[K]>;
 };
-interface HTMLLazyframeElement extends HTMLElement {
+export interface HTMLLazyframeElement extends HTMLElement {
     dataset: LazyframeDatasetStringOptions;
 }
 type LazyframeSettings = LazyframeOptions & Omit<LazyframeDatasetOptions, 'thumbnail'> & {
