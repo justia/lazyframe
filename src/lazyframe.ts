@@ -148,11 +148,6 @@ const Lazyframe = () => {
     function loop(el: HTMLLazyframeElement): void {
         if (!(el instanceof HTMLElement) || el.classList.contains('lazyframe--loaded')) return;
 
-        // There's cases where the `lazyload` library is loaded in two
-        // different scripts, so we set a flag to know if an iframe
-        // was already handled by lazyload previously
-        if (el.dataset.lazyloadReady === 'true') return;
-
         const settings = setup(el);
         const instance: LazyframeInstance = {
             el,
@@ -181,8 +176,6 @@ const Lazyframe = () => {
             elements.set(instance.el, instance);
         }
 
-        // Assign this at the end to avoid polution during the setup.
-        el.dataset.lazyloadReady = 'true';
         instance.el.classList.add('lazyframe--loaded');
     }
 
@@ -412,6 +405,7 @@ const Lazyframe = () => {
         // If this function is called during setup or by the intersection observer,
         // ensure the build only occurs once.
         instance.settings.built = true;
+        instance.el.classList.add('lazyframe--ready');
     }
 
     // TODO: Extract to another module.
