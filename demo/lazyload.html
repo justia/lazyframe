@@ -12,19 +12,26 @@
 
         <div class="content">
             <h2><code>data-lazyload</code></h2>
-        </div>
-
-        <hr />
-
-        <div class="content">
-            <h3>
-                <code>data-lazyload="true"</code>
-                (Default)
-            </h3>
-            <p class="text-center">
-                See example of this variant
-                <a href="vendors.html">here</a>
-                .
+            <p style="display: flex; align-items: center; justify-content: center; gap: 1rem; margin-top: 2em">
+                <img src="./arrow.svg" width="36" height="36" alt="arrow" />
+                <big><strong>Scroll down</strong></big>
+            </p>
+            <p>
+                Magna tempor laboris exercitation velit. Magna in nostrud in do sit incididunt incididunt mollit cupidatat mollit. Velit dolor irure proident in laborum ipsum. Nisi ad irure
+                adipisicing ex occaecat velit elit id mollit mollit laborum. Ex incididunt nisi enim sunt velit. Laboris laboris aliquip pariatur eu proident do quis veniam.
+            </p>
+            <p>
+                Do veniam velit sit eiusmod magna ex labore eiusmod. Dolore adipisicing laboris irure aliqua culpa. Proident occaecat ullamco sint elit sit. Veniam voluptate ipsum nisi est anim
+                cupidatat minim voluptate id. Fugiat mollit excepteur dolore do labore do. Ea exercitation commodo elit in et commodo. Laborum amet aute excepteur deserunt commodo esse ipsum tempor
+                consectetur ut minim culpa laborum.
+            </p>
+            <p>
+                Pariatur excepteur nisi ea incididunt culpa commodo quis nostrud nisi in. Sit cupidatat quis anim cupidatat deserunt eiusmod cillum eu aliqua. Consectetur ullamco adipisicing cillum
+                consectetur aliquip do nisi pariatur ad labore consectetur ea.
+            </p>
+            <p>
+                Reprehenderit est veniam adipisicing elit aliqua sit esse enim exercitation culpa reprehenderit. Do pariatur ea eiusmod voluptate proident elit ad nostrud labore irure do incididunt
+                fugiat ex. Ea sunt dolore ullamco adipisicing mollit amet eu dolor amet laboris velit ea ipsum nulla.
             </p>
         </div>
 
@@ -34,28 +41,121 @@
             <h3>
                 <code>data-lazyload="false"</code>
             </h3>
-            <p class="text-center">Forces instance to generate the final video iframe on page load.</p>
-            <blockquote class="error">Not working!</blockquote>
+            <p class="text-center">Forces instance to initialize on page load.</p>
+        </div>
+
+        <div class="samples">
+            <div class="sample">
+                <p>
+                    <strong>YouTube</strong>
+                    <br />
+                    Element with
+                    <code>data-lazyload</code>
+                    only.
+                </p>
+                <div id="test1-lazyload-false" class="lazyframe" data-src="https://www.youtube.com/embed/ara1uUvajoU" data-vendor="youtube" data-lazyload="false"></div>
+            </div>
+        </div>
+
+        <div class="content">
+            <p style="display: flex; align-items: center; justify-content: center; gap: 1rem; margin-top: 2em">
+                <img src="./arrow.svg" width="36" height="36" alt="arrow" />
+                <big><strong>Continue scrolling...</strong></big>
+            </p>
+            <p>
+                Magna tempor laboris exercitation velit. Magna in nostrud in do sit incididunt incididunt mollit cupidatat mollit. Velit dolor irure proident in laborum ipsum. Nisi ad irure
+                adipisicing ex occaecat velit elit id mollit mollit laborum. Ex incididunt nisi enim sunt velit. Laboris laboris aliquip pariatur eu proident do quis veniam.
+            </p>
+            <p>
+                Do veniam velit sit eiusmod magna ex labore eiusmod. Dolore adipisicing laboris irure aliqua culpa. Proident occaecat ullamco sint elit sit. Veniam voluptate ipsum nisi est anim
+                cupidatat minim voluptate id. Fugiat mollit excepteur dolore do labore do. Ea exercitation commodo elit in et commodo. Laborum amet aute excepteur deserunt commodo esse ipsum tempor
+                consectetur ut minim culpa laborum.
+            </p>
+        </div>
+
+        <div class="samples">
+            <div class="sample">
+                <p>
+                    <strong>YouTube (nocookie)</strong>
+                    <br />
+                    Element with
+                    <code>data-initinview</code>
+                    enabled.
+                </p>
+                <div
+                    id="test2-lazyload-false"
+                    class="lazyframe"
+                    data-src="https://www.youtube-nocookie.com/embed/EO9inlOjZGg?rel=0"
+                    data-vendor="youtube_nocookie"
+                    data-lazyload="false"
+                    data-initinview="true"
+                ></div>
+            </div>
+        </div>
+
+        <div class="content">
+            <p style="display: flex; align-items: center; justify-content: center; gap: 1rem; margin-top: 2em">
+                <img src="./arrow.svg" width="36" height="36" alt="arrow" />
+                <big><strong>Continue scrolling...</strong></big>
+            </p>
+            <p>
+                Magna tempor laboris exercitation velit. Magna in nostrud in do sit incididunt incididunt mollit cupidatat mollit. Velit dolor irure proident in laborum ipsum. Nisi ad irure
+                adipisicing ex occaecat velit elit id mollit mollit laborum. Ex incididunt nisi enim sunt velit. Laboris laboris aliquip pariatur eu proident do quis veniam.
+            </p>
+            <p>
+                Do veniam velit sit eiusmod magna ex labore eiusmod. Dolore adipisicing laboris irure aliqua culpa. Proident occaecat ullamco sint elit sit. Veniam voluptate ipsum nisi est anim
+                cupidatat minim voluptate id. Fugiat mollit excepteur dolore do labore do. Ea exercitation commodo elit in et commodo. Laborum amet aute excepteur deserunt commodo esse ipsum tempor
+                consectetur ut minim culpa laborum.
+            </p>
+        </div>
+
+        <div class="samples">
+            <div class="sample">
+                <p>
+                    <strong>Vimeo</strong>
+                    <br />
+                    Element with
+                    <code>data-title</code>
+                    and
+                    <code>data-thumbnail</code>
+                    .
+                </p>
+                <div
+                    id="test3-lazyload-false"
+                    class="lazyframe"
+                    data-src="https://vimeo.com/111049676"
+                    data-vendor="vimeo"
+                    data-lazyload="false"
+                    data-title="Lorem Ipsum"
+                    data-thumbnail="https://picsum.photos/id/55/500/281"
+                ></div>
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="content">
+            <h3>
+                <code>data-lazyload="true"</code>
+                (Default)
+            </h3>
         </div>
 
         <div class="samples">
             <div class="sample">
                 <p><strong>YouTube</strong></p>
-                <div class="lazyframe" data-src="https://www.youtube.com/embed/ara1uUvajoU" data-vendor="youtube" data-lazyload="false"></div>
-            </div>
-            <div class="sample">
-                <p><strong>YouTube (nocookie)</strong></p>
-                <div class="lazyframe" data-src="https://www.youtube-nocookie.com/embed/EO9inlOjZGg?rel=0" data-vendor="youtube_nocookie" data-lazyload="false"></div>
-            </div>
-            <div class="sample">
-                <p><strong>Vimeo</strong></p>
-                <div class="lazyframe" data-src="https://vimeo.com/111049676" data-vendor="vimeo" data-lazyload="false"></div>
+                <div id="test4-lazyload-true" class="lazyframe" data-src="https://www.youtube.com/embed/ara1uUvajoU" data-vendor="youtube"></div>
             </div>
         </div>
 
         <script src="/dist/lazyframe.min.js"></script>
         <script>
+            console.log('FIRST CALL ==========================================');
             lazyframe('.lazyframe');
         </script>
+        <!-- <script>
+            console.log('SECOND CALL ==========================================');
+            lazyframe('.lazyframe');
+        </script> -->
     </body>
 </html>

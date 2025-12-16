@@ -35,7 +35,7 @@ export default [
         },
         plugins: [
             typescript({ sourceMap: isDev, inlineSources: isDev }),
-            terser(),
+            !isDev && terser(),
             libScss,
 
             // Serve and Livereload ONLY happen in dev mode
