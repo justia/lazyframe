@@ -18,7 +18,7 @@ type LazyframeOptions = {
     onLoad?: (instance: LazyframeInstance) => void;
     onAppend?: (iframe: HTMLIFrameElement) => void;
     onThumbnailLoad?: (imgUrl: string) => void;
-}
+};
 
 // Defines all the possible `data-*` attributes that the element could have.
 type LazyframeDatasetStringOptions = {
@@ -36,8 +36,7 @@ type LazyframeDatasetStringOptions = {
 
 // The Transformation Type
 type LazyframeDatasetOptions = {
-    [K in keyof LazyframeDatasetStringOptions]:
-        ConvertStringBool<LazyframeDatasetStringOptions[K]>
+    [K in keyof LazyframeDatasetStringOptions]: ConvertStringBool<LazyframeDatasetStringOptions[K]>;
 };
 
 interface HTMLLazyframeElement extends HTMLElement {
@@ -46,38 +45,39 @@ interface HTMLLazyframeElement extends HTMLElement {
 
 // Fully resolved settings for an instance, merging defaults, user settings, data-attributes and extra values defined during execution.
 // `thumbnail` ommited because internally the value is transformed into an array of strings to set the inline background.
-type LazyframeSettings = LazyframeOptions & Omit<LazyframeDatasetOptions, 'thumbnail'> & {
-    initialized: boolean;
-    built: boolean;
-    originalSrc: string;
-    useApi: boolean;
-    thumbnails: string[];
-    id?: string;
-};
+type LazyframeSettings = LazyframeOptions &
+    Omit<LazyframeDatasetOptions, 'thumbnail'> & {
+        initialized: boolean;
+        built: boolean;
+        originalSrc: string;
+        useApi: boolean;
+        thumbnails: string[];
+        id?: string;
+    };
 
 // The internal representation of a single lazyframe instance
 type LazyframeInstance = {
     el: HTMLLazyframeElement;
     settings: LazyframeSettings;
     iframe: HTMLIFrameElement;
-}
+};
 
 type NoEmbedResponse = {
     title: string;
     thumbnail_url: string;
-}
+};
 
 type VideoParams = {
     id: string;
     autoplay: boolean;
     query?: string;
-}
+};
 
 type VideoProvider = {
     regex: RegExp;
     condition: (match: RegExpMatchArray | null) => string | undefined;
     buildSrc: (params: VideoParams) => string;
-}
+};
 
 const providers: Record<Vendor, VideoProvider> = {
     youtube: {
@@ -127,8 +127,11 @@ const Lazyframe = () => {
         },
     };
 
-    function init(selector: string | HTMLLazyframeElement | NodeListOf<HTMLLazyframeElement>, userOptions: LazyframeOptions = {}): void {
-        programmaticOptions = { ...DEFAULT_OPTIONS , ...userOptions };
+    function init(
+        selector: string | HTMLLazyframeElement | NodeListOf<HTMLLazyframeElement>,
+        userOptions: LazyframeOptions = {},
+    ): void {
+        programmaticOptions = { ...DEFAULT_OPTIONS, ...userOptions };
 
         const els = typeof selector === 'string' ? document.querySelectorAll<HTMLLazyframeElement>(selector) : selector;
 

@@ -107,7 +107,7 @@ test('should expose lazyframe()', (t) => {
 test('should initialize one node with a string selector', (t) => {
     const node = createDomNode({
         vendor: 'youtube',
-        src: 'http://www.youtube.com/embed/iwGFalTRHDA/?rel=0'
+        src: 'http://www.youtube.com/embed/iwGFalTRHDA/?rel=0',
     });
     window.lazyframe('.lazyframe');
 
@@ -117,11 +117,11 @@ test('should initialize one node with a string selector', (t) => {
 test('should initialize multiple nodes with a string selector', (t) => {
     createDomNode({
         vendor: 'youtube',
-        src: 'http://www.youtube.com/embed/iwGFalTRHDA'
+        src: 'http://www.youtube.com/embed/iwGFalTRHDA',
     });
     createDomNode({
         vendor: 'youtube',
-        src: 'http://www.youtube.com/embed/iwGFalTRHDB'
+        src: 'http://www.youtube.com/embed/iwGFalTRHDB',
     });
 
     window.lazyframe('.lazyframe');
@@ -132,7 +132,7 @@ test('should initialize multiple nodes with a string selector', (t) => {
 test('should initialize with a single HTMLElement', (t) => {
     const node = createDomNode({
         vendor: 'youtube',
-        src: 'http://www.youtube.com/embed/iwGFalTRHDA'
+        src: 'http://www.youtube.com/embed/iwGFalTRHDA',
     });
     window.lazyframe(node);
 
@@ -142,11 +142,11 @@ test('should initialize with a single HTMLElement', (t) => {
 test('should initialize with a NodeList', (t) => {
     createDomNode({
         vendor: 'youtube',
-        src: 'http://www.youtube.com/embed/iwGFalTRHDA'
+        src: 'http://www.youtube.com/embed/iwGFalTRHDA',
     });
     createDomNode({
         vendor: 'youtube',
-        src: 'http://www.youtube.com/embed/iwGFalTRHDB'
+        src: 'http://www.youtube.com/embed/iwGFalTRHDB',
     });
 
     const nodes = document.querySelectorAll('.lazyframe');
@@ -160,9 +160,12 @@ test('should throw error when data-src is missing', (t) => {
     node.classList.add('lazyframe');
     document.body.appendChild(node);
 
-    t.throws(() => {
-        window.lazyframe(node);
-    }, { message: /data-src.*must exist/i });
+    t.throws(
+        () => {
+            window.lazyframe(node);
+        },
+        { message: /data-src.*must exist/i },
+    );
 });
 
 // ===== LAZY LOADING TESTS =====
@@ -170,7 +173,7 @@ test('should throw error when data-src is missing', (t) => {
 test('should lazy load by default (wait for intersection)', (t) => {
     const node = createDomNode({
         vendor: 'youtube',
-        src: 'http://www.youtube.com/embed/iwGFalTRHDA'
+        src: 'http://www.youtube.com/embed/iwGFalTRHDA',
     });
     window.lazyframe('.lazyframe');
 
@@ -186,7 +189,7 @@ test('should load immediately when lazyload is false (global option)', async (t)
         vendor: 'youtube',
         src: 'http://www.youtube.com/embed/iwGFalTRHDA',
         title: 'Test Title',
-        thumbnail: 'test.jpg'
+        thumbnail: 'test.jpg',
     });
 
     window.lazyframe('.lazyframe', { lazyload: false });
@@ -203,7 +206,7 @@ test('should load immediately when data-lazyload is false', async (t) => {
         src: 'http://www.youtube.com/embed/iwGFalTRHDA',
         lazyload: 'false',
         title: 'Test Title',
-        thumbnail: 'test.jpg'
+        thumbnail: 'test.jpg',
     });
 
     window.lazyframe('.lazyframe');
@@ -220,7 +223,7 @@ test('should append an iframe on click', async (t) => {
         vendor: 'youtube',
         src: 'http://www.youtube.com/embed/iwGFalTRHDA/?rel=0',
         title: 'Test',
-        thumbnail: 'test.jpg'
+        thumbnail: 'test.jpg',
     });
 
     window.lazyframe('.lazyframe');
@@ -237,7 +240,7 @@ test('iframe should have correct src attribute', async (t) => {
         vendor: 'youtube',
         src: 'http://www.youtube.com/embed/iwGFalTRHDA',
         title: 'Test',
-        thumbnail: 'test.jpg'
+        thumbnail: 'test.jpg',
     });
 
     window.lazyframe(node);
@@ -257,7 +260,7 @@ test('iframe should have allowFullscreen attribute', async (t) => {
         vendor: 'youtube',
         src: 'http://www.youtube.com/embed/iwGFalTRHDA',
         title: 'Test',
-        thumbnail: 'test.jpg'
+        thumbnail: 'test.jpg',
     });
 
     window.lazyframe(node);
@@ -277,7 +280,7 @@ test('iframe should have allow attribute when autoplay is true', async (t) => {
         src: 'http://www.youtube.com/embed/iwGFalTRHDA',
         autoplay: 'true',
         title: 'Test',
-        thumbnail: 'test.jpg'
+        thumbnail: 'test.jpg',
     });
 
     window.lazyframe(node);
@@ -297,7 +300,7 @@ test('should add lazyframe--activated class after click', async (t) => {
         vendor: 'youtube',
         src: 'http://www.youtube.com/embed/iwGFalTRHDA',
         title: 'Test',
-        thumbnail: 'test.jpg'
+        thumbnail: 'test.jpg',
     });
 
     window.lazyframe(node);
@@ -317,7 +320,7 @@ test('should have autoplay=1 in src when autoplay is true (global)', async (t) =
         vendor: 'youtube',
         src: 'http://www.youtube.com/embed/iwGFalTRHDA',
         title: 'Test',
-        thumbnail: 'test.jpg'
+        thumbnail: 'test.jpg',
     });
 
     window.lazyframe(node, { autoplay: true });
@@ -337,7 +340,7 @@ test('should have autoplay=0 in src when autoplay is false (data attribute)', as
         src: 'http://www.youtube.com/embed/iwGFalTRHDA',
         autoplay: 'false',
         title: 'Test',
-        thumbnail: 'test.jpg'
+        thumbnail: 'test.jpg',
     });
 
     window.lazyframe(node);
@@ -357,7 +360,7 @@ test('should have autoplay=1 when data-autoplay=true', async (t) => {
         src: 'http://www.youtube.com/embed/iwGFalTRHDA',
         autoplay: 'true',
         title: 'Test',
-        thumbnail: 'test.jpg'
+        thumbnail: 'test.jpg',
     });
 
     window.lazyframe(node);
@@ -378,7 +381,7 @@ test('should auto-click when initinview is true (global)', async (t) => {
         vendor: 'youtube',
         src: 'http://www.youtube.com/embed/iwGFalTRHDA',
         title: 'Test',
-        thumbnail: 'test.jpg'
+        thumbnail: 'test.jpg',
     });
 
     window.lazyframe(node, { initinview: true });
@@ -399,7 +402,7 @@ test('should auto-click when data-initinview=true', async (t) => {
         src: 'http://www.youtube.com/embed/iwGFalTRHDA',
         initinview: 'true',
         title: 'Test',
-        thumbnail: 'test.jpg'
+        thumbnail: 'test.jpg',
     });
 
     window.lazyframe(node);
@@ -415,7 +418,7 @@ test('should auto-click when data-initinview=true', async (t) => {
 test('should fetch title from API when missing', async (t) => {
     const node = createDomNode({
         vendor: 'youtube',
-        src: 'http://www.youtube.com/embed/iwGFalTRHDA'
+        src: 'http://www.youtube.com/embed/iwGFalTRHDA',
     });
 
     window.lazyframe(node);
@@ -432,7 +435,7 @@ test('should fetch thumbnail from API when missing', async (t) => {
     const node = createDomNode({
         vendor: 'youtube',
         src: 'http://www.youtube.com/embed/iwGFalTRHDA',
-        title: 'Custom Title'
+        title: 'Custom Title',
     });
 
     window.lazyframe(node);
@@ -455,7 +458,7 @@ test('should NOT fetch API if title and thumbnail are present', async (t) => {
         vendor: 'youtube',
         src: 'http://www.youtube.com/embed/iwGFalTRHDA',
         title: 'Custom Title',
-        thumbnail: 'custom.jpg'
+        thumbnail: 'custom.jpg',
     });
 
     window.lazyframe(node);
@@ -478,7 +481,7 @@ test('should NOT fetch API when data-load-thumbnail is false', async (t) => {
         vendor: 'youtube',
         src: 'http://www.youtube.com/embed/iwGFalTRHDA',
         title: 'Custom Title',
-        loadThumbnail: 'false'
+        loadThumbnail: 'false',
     });
 
     window.lazyframe(node);
@@ -496,7 +499,7 @@ test('should support YouTube provider', async (t) => {
         vendor: 'youtube',
         src: 'https://www.youtube.com/watch?v=iwGFalTRHDA',
         title: 'Test',
-        thumbnail: 'test.jpg'
+        thumbnail: 'test.jpg',
     });
 
     window.lazyframe(node);
@@ -515,7 +518,7 @@ test('should support YouTube no-cookie provider', async (t) => {
         vendor: 'youtube_nocookie',
         src: 'https://www.youtube-nocookie.com/embed/iwGFalTRHDA',
         title: 'Test',
-        thumbnail: 'test.jpg'
+        thumbnail: 'test.jpg',
     });
 
     window.lazyframe(node);
@@ -535,7 +538,7 @@ test('should support Vimeo provider', async (t) => {
         vendor: 'vimeo',
         src: 'https://vimeo.com/123456',
         title: 'Test',
-        thumbnail: 'test.jpg'
+        thumbnail: 'test.jpg',
     });
 
     window.lazyframe(node);
@@ -554,7 +557,7 @@ test('should extract video ID from YouTube URL', async (t) => {
         vendor: 'youtube',
         src: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
         title: 'Test',
-        thumbnail: 'test.jpg'
+        thumbnail: 'test.jpg',
     });
 
     window.lazyframe(node);
@@ -573,7 +576,7 @@ test('should extract video ID from Vimeo URL', async (t) => {
         vendor: 'vimeo',
         src: 'https://vimeo.com/987654321',
         title: 'Test',
-        thumbnail: 'test.jpg'
+        thumbnail: 'test.jpg',
     });
 
     window.lazyframe(node);
@@ -594,7 +597,7 @@ test('should preserve existing query parameters', async (t) => {
         vendor: 'youtube',
         src: 'https://www.youtube.com/watch?v=iwGFalTRHDA&rel=0&modestbranding=1',
         title: 'Test',
-        thumbnail: 'test.jpg'
+        thumbnail: 'test.jpg',
     });
 
     window.lazyframe(node);
@@ -616,7 +619,7 @@ test('should apply thumbnail as background image', async (t) => {
         vendor: 'youtube',
         src: 'http://www.youtube.com/embed/iwGFalTRHDA',
         thumbnail: 'https://example.com/thumb.jpg',
-        title: 'Test'
+        title: 'Test',
     });
 
     window.lazyframe(node);
@@ -639,7 +642,7 @@ test.skip('should support multiple thumbnail URLs (image-set)', async (t) => {
         vendor: 'youtube',
         src: 'http://www.youtube.com/embed/iwGFalTRHDA',
         thumbnail: 'thumb1.jpg, thumb2.jpg',
-        title: 'Test'
+        title: 'Test',
     });
 
     window.lazyframe(node);
@@ -656,7 +659,7 @@ test('should NOT apply thumbnail when loadThumbnail is false (global)', async (t
         vendor: 'youtube',
         src: 'http://www.youtube.com/embed/iwGFalTRHDA',
         thumbnail: 'https://example.com/thumb.jpg',
-        title: 'Test'
+        title: 'Test',
     });
 
     window.lazyframe(node, { loadThumbnail: false });
@@ -673,7 +676,7 @@ test('should NOT apply thumbnail when data-load-thumbnail is false', async (t) =
         src: 'http://www.youtube.com/embed/iwGFalTRHDA',
         thumbnail: 'https://example.com/thumb.jpg',
         title: 'Test',
-        loadThumbnail: 'false'
+        loadThumbnail: 'false',
     });
 
     window.lazyframe(node);
@@ -691,7 +694,7 @@ test('should display custom title', async (t) => {
         vendor: 'youtube',
         src: 'http://www.youtube.com/embed/iwGFalTRHDA',
         title: 'My Custom Title',
-        thumbnail: 'test.jpg'
+        thumbnail: 'test.jpg',
     });
 
     window.lazyframe(node);
@@ -709,7 +712,7 @@ test('should not duplicate title element', async (t) => {
         vendor: 'youtube',
         src: 'http://www.youtube.com/embed/iwGFalTRHDA',
         title: 'Test Title',
-        thumbnail: 'test.jpg'
+        thumbnail: 'test.jpg',
     });
 
     window.lazyframe(node);
@@ -728,7 +731,7 @@ test('should show play button by default', async (t) => {
         vendor: 'youtube',
         src: 'http://www.youtube.com/embed/iwGFalTRHDA',
         title: 'Test',
-        thumbnail: 'test.jpg'
+        thumbnail: 'test.jpg',
     });
 
     window.lazyframe(node);
@@ -745,7 +748,7 @@ test('should NOT show play button when showPlayButton is false (global)', async 
         vendor: 'youtube',
         src: 'http://www.youtube.com/embed/iwGFalTRHDA',
         title: 'Test',
-        thumbnail: 'test.jpg'
+        thumbnail: 'test.jpg',
     });
 
     window.lazyframe(node, { showPlayButton: false });
@@ -763,7 +766,7 @@ test('should NOT show play button when data-show-play-button is false', async (t
         src: 'http://www.youtube.com/embed/iwGFalTRHDA',
         showPlayButton: 'false',
         title: 'Test',
-        thumbnail: 'test.jpg'
+        thumbnail: 'test.jpg',
     });
 
     window.lazyframe(node);
@@ -783,7 +786,7 @@ test('should apply 16:9 aspect ratio', (t) => {
         src: 'http://www.youtube.com/embed/iwGFalTRHDA',
         ratio: '16:9',
         title: 'Test',
-        thumbnail: 'test.jpg'
+        thumbnail: 'test.jpg',
     });
 
     window.lazyframe(node);
@@ -797,7 +800,7 @@ test('should apply 4:3 aspect ratio', (t) => {
         src: 'http://www.youtube.com/embed/iwGFalTRHDA',
         ratio: '4:3',
         title: 'Test',
-        thumbnail: 'test.jpg'
+        thumbnail: 'test.jpg',
     });
 
     window.lazyframe(node);
@@ -811,7 +814,7 @@ test('should apply 1:1 aspect ratio', (t) => {
         src: 'http://www.youtube.com/embed/iwGFalTRHDA',
         ratio: '1:1',
         title: 'Test',
-        thumbnail: 'test.jpg'
+        thumbnail: 'test.jpg',
     });
 
     window.lazyframe(node);
@@ -829,7 +832,7 @@ test('should call onLoad callback', async (t) => {
         vendor: 'youtube',
         src: 'http://www.youtube.com/embed/iwGFalTRHDA',
         title: 'Test',
-        thumbnail: 'test.jpg'
+        thumbnail: 'test.jpg',
     });
 
     window.lazyframe('.lazyframe', {
@@ -857,7 +860,7 @@ test('should call onAppend callback', async (t) => {
         vendor: 'youtube',
         src: 'http://www.youtube.com/embed/iwGFalTRHDA',
         title: 'Test',
-        thumbnail: 'test.jpg'
+        thumbnail: 'test.jpg',
     });
 
     window.lazyframe('.lazyframe', {
@@ -885,7 +888,7 @@ test('should call onThumbnailLoad callback when thumbnail is fetched', async (t)
     const node = createDomNode({
         vendor: 'youtube',
         src: 'http://www.youtube.com/embed/iwGFalTRHDA',
-        title: 'Test'
+        title: 'Test',
     });
 
     window.lazyframe(node, {
@@ -913,7 +916,7 @@ test('should handle API errors gracefully', async (t) => {
 
     const node = createDomNode({
         vendor: 'youtube',
-        src: 'http://www.youtube.com/embed/iwGFalTRHDA'
+        src: 'http://www.youtube.com/embed/iwGFalTRHDA',
     });
 
     window.lazyframe(node);
@@ -933,7 +936,7 @@ test('should handle failed API response', async (t) => {
 
     const node = createDomNode({
         vendor: 'youtube',
-        src: 'http://www.youtube.com/embed/iwGFalTRHDA'
+        src: 'http://www.youtube.com/embed/iwGFalTRHDA',
     });
 
     window.lazyframe(node);
@@ -951,7 +954,7 @@ test('should add lazyframe--loaded class', (t) => {
         vendor: 'youtube',
         src: 'http://www.youtube.com/embed/iwGFalTRHDA',
         title: 'Test',
-        thumbnail: 'test.jpg'
+        thumbnail: 'test.jpg',
     });
 
     window.lazyframe(node);
@@ -964,7 +967,7 @@ test('should add lazyframe--ready class after initialization', async (t) => {
         vendor: 'youtube',
         src: 'http://www.youtube.com/embed/iwGFalTRHDA',
         title: 'Test',
-        thumbnail: 'test.jpg'
+        thumbnail: 'test.jpg',
     });
 
     window.lazyframe(node);
@@ -980,7 +983,7 @@ test('should not initialize the same element twice', async (t) => {
         vendor: 'youtube',
         src: 'http://www.youtube.com/embed/iwGFalTRHDA',
         title: 'Test',
-        thumbnail: 'test.jpg'
+        thumbnail: 'test.jpg',
     });
 
     window.lazyframe(node);
