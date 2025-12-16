@@ -32,16 +32,18 @@ type LazyframeDatasetOptions = {
 interface HTMLLazyframeElement extends HTMLElement {
     dataset: LazyframeDatasetStringOptions;
 }
-type LazyframeSettings = LazyframeOptions & LazyframeDatasetOptions & {
+type LazyframeSettings = LazyframeOptions & Omit<LazyframeDatasetOptions, 'thumbnail'> & {
     initialized: boolean;
+    built: boolean;
     originalSrc: string;
+    useApi: boolean;
+    thumbnails: string[];
     id?: string;
-    query?: string;
 };
 type LazyframeInstance = {
     el: HTMLLazyframeElement;
     settings: LazyframeSettings;
-    iframe?: HTMLIFrameElement;
+    iframe: HTMLIFrameElement;
 };
 declare const lazyframe: (selector: string | HTMLLazyframeElement | NodeListOf<HTMLLazyframeElement>, userOptions?: LazyframeOptions) => void;
 export default lazyframe;
